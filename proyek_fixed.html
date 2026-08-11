@@ -1,0 +1,4906 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard pos</title>
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@600;700&display=swap');
+
+:root {
+  --primary: #0E5FA8;
+  --primary-hover: #0A4C87;
+  --primary-soft: #DEEBF9;
+  --accent: #FFB020;
+  --accent-hover: #E89900;
+  --accent-ink: #7A4A00;
+  --success: #1E9E5A;
+  --success-soft: #E1F7EA;
+  --danger: #E4572E;
+  --danger-soft: #FDE6DF;
+  --danger-hover: #C7431E;
+  --warning: #F5A623;
+  --warning-soft: #FFF2D9;
+  --bg: #F5F9FC;
+  --surface: #FFFFFF;
+  --surface-alt: #EEF5FB;
+  --header-bg: #ffffff;
+  --footer-bg: #ffffff;
+  --text: #2E4248;
+  --white-text: #0C1A22;
+  --text-on-primary: #FFFFFF;
+  --text-muted: #5C7488;
+  --border: #D7E6F0;
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 2px 8px rgba(14, 40, 60, .07);
+  --shadow: 0 12px 28px rgba(14, 40, 60, .14);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: 'Sora', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, "Courier New", monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: var(--font);
+  background: var(--bg);
+  background-image:
+    radial-gradient(circle at 100% 0%, rgba(255, 176, 32, .10) 0%, transparent 40%),
+    radial-gradient(circle at 0% 100%, rgba(14, 124, 102, .08) 0%, transparent 45%);
+  background-attachment: fixed;
+  color: var(--text);
+  line-height: 1.45;
+}
+
+button, input, select {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+input:hover, select:hover {
+  border-color: var(--primary);
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(14, 124, 102, .16);
+}
+
+input:active, select:active {
+  border-color: var(--primary-hover);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.chart-wrap {
+  position: relative;
+  height: 260px;
+  width: 100%;
+}
+/* ===== Header & footer bar (mobile-first: header ringkas, footer jadi tab bar melayang) ===== */
+.atas {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--header-bg);
+  padding: 14px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.atas-tengah {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--header-bg);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.tt {
+  cursor: pointer;
+  color: var(--primary);
+  background: var(--primary-soft);
+  font-size: 1.2rem;
+  line-height: 1;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  user-select: none;
+  transition: background .15s ease, transform .1s ease;
+}
+
+.tt:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.tt:active {
+  transform: scale(.94);
+}
+
+.greet {
+  color: var(--text-muted);
+  font-size: .9rem;
+  font-weight: 500;
+  opacity: 1;
+  white-space: nowrap;
+}
+
+#jdl {
+  margin-left: auto;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: .1px;
+  white-space: nowrap;
+}
+
+.judul {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.bawah {
+  position: sticky;
+  bottom: 0;
+  z-index: 50;
+  background: var(--footer-bg);
+  border-top: 1px solid var(--border);
+  padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  overflow: auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 -8px 20px rgba(14, 60, 50, .08);
+}
+
+.bawah button {
+  font-size: .85rem;
+  padding: 10px 12px;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s ease, color .15s ease;
+}
+
+.bawah button:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.bawah button:active {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ===== Popup menu (hamburger) ===== */
+.popupMenu {
+  position: absolute;
+  top: 66px;
+  left: 16px;
+  z-index: 350;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 8px;
+  min-width: 200px;
+  animation: fromBottom .35s ease forwards;
+}
+
+.popupMenu .btn {
+  width: 100%;
+  justify-content: flex-start;
+  background: transparent;
+  color: var(--text);
+  box-shadow: none;
+  font-weight: 600;
+}
+
+.popupMenu .btn:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.popupMenu .btn:active {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ===== Buttons ===== */
+.btn {
+  position: relative;
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  background: var(--primary);
+  color: var(--text-on-primary);
+  font-weight: 600;
+  font-size: .95rem;
+  padding: 12px 20px;
+  min-height: 44px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 5px;
+  box-shadow: var(--shadow-sm);
+  transition: background .15s ease, transform .1s ease;
+}
+
+.btn:hover {
+  background: var(--primary-hover);
+}
+
+.btn:active {
+  transform: translateY(1px) scale(.98);
+  background: var(--primary-hover);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn-cancel {
+  background: var(--primary-soft);
+  color: var(--primary);
+  padding: 12px;
+  box-shadow: none;
+  border: 1px double var(--border);
+}
+
+.btn-cancel:hover {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+}
+
+.btn-cancel:active {
+  background: var(--primary);
+  color: var(--text-on-primary);
+}
+
+.btn-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.btns {
+  background: var(--surface);
+  padding: 10px;
+  font-size: .85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin: 0 5px;
+  cursor: pointer;
+  color: var(--text);
+  transition: background .15s ease, border-color .15s ease;
+}
+
+.btns2 {
+  background: var(--surface);
+  padding: 5px;
+  border: none;
+  margin: 0 5px;
+  cursor: pointer;
+  font-size: .85rem;
+  color: var(--text-muted);
+  transition: all 0.3s ease;
+}
+.btns2:active {
+	color: #ffffff;
+	background: #000000;
+	border: none;
+	border-radius: 2px;
+}
+
+.btns:hover {
+  background: var(--surface-alt);
+  border-color: var(--primary);
+}
+
+.btns:active {
+  background: var(--primary-soft);
+}
+
+.btn-khusus-popup {
+  font-size: 1rem;
+  background: transparent;
+  padding: 6px;
+  margin: 5px 10px;
+  border: none;
+  color: var(--text-on-primary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background .15s ease, color .15s ease;
+}
+
+.btn-khusus-popup:hover {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.btn-khusus-popup:active {
+  background: var(--surface-alt);
+  color: var(--text);
+}
+
+.invisible-btn {
+  background: transparent;
+  font-size: 1rem;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  width: 100%;
+  color: var(--text);
+  text-align: left;
+  border-radius: var(--radius-sm);
+  transition: background .15s ease;
+}
+
+.invisible-btn:hover {
+  background: var(--primary-soft);
+}
+
+.invisible-btn:active {
+  background: var(--accent);
+}
+
+/* Total / kembalian — signature "digital till readout" */
+.total {
+  color: var(--primary-hover);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  padding: 16px;
+  background: transparent;
+  border-radius: var(--radius);
+  border: none;
+  cursor: default;
+  width: 100%;
+  text-align: center;
+  letter-spacing: .5px;
+}
+
+.tot, .change {
+	color: var(--accent-ink);
+	font-size: 1.85rem;
+	font-weight: 700;
+	font-family: var(--font-display);
+	padding: 16px;
+	background: var(--surface);
+	border: none;
+	border-radius: var(--radius-sm);
+}
+
+.badge {
+  position: absolute;
+  z-index: 200;
+  top: -6px;
+  right: -6px;
+  padding: 4px 6px;
+  min-width: 18px;
+  border: 2px solid var(--surface);
+  border-radius: 20px;
+  background: var(--danger);
+  color: white;
+  font-size: .75rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}
+
+/* ===== Base page layout ===== */
+.tengah {
+	position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px;
+  padding: 12px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  overflow: auto;
+}
+
+/* ===== Split layout (sidebar + main) — dipakai di Transaksi, Pemilik, Produk ===== */
+.big-container {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 1;
+  gap: 14px;
+  width: 100%;
+}
+
+.profil-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: auto;
+  max-width: 600px;
+  gap: 10px;
+  height: fit-content;
+  animation: fromBottom .4s ease forwards;
+}
+
+.checkout-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  gap: 10px;
+  height: 100%;
+}
+
+.right-container {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+	position: relative;
+	display: flex;
+	background: var(--surface);
+	flex-direction: column;
+	gap: 10px;
+	padding: 10px;
+	padding-top: 20px;
+	margin: 10px 0;
+	border: 2px double var(--border);
+	border-radius: var(--radius-sm);
+	animation: fromBottom 0.5s ease forwards;
+}
+
+/* ===== Kartu generik (produk, user, pembayaran, dll) ===== */
+.container {
+  position: relative;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: none;
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  width: 100%;
+  flex-direction: column;
+  overflow: auto;
+  transition: box-shadow .5s ease, border-color .25s ease, transform .3s ease;
+}
+
+.container:hover {
+  box-shadow: var(--shadow);
+}
+
+.container-horizontal {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  width: 100%;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .15s ease, border-color .15s ease;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.produk-card {
+  box-shadow: var(--shadow);
+  max-width: 100%;
+}
+
+.produk-card.stok-kritis {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+}
+
+.produk-card.stok-pas {
+  background: var(--warning-soft);
+  border-color: var(--warning);
+}
+
+/* Bungkus serbaguna dari pembuatFrame() — kartu besar maupun baris kecil (mis. stepper qty) */
+.value-frame {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  gap: 8px;
+}
+
+.value-frame {
+  width: 100%;
+  min-width: 0;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+  border: none;
+  margin-bottom: 14px;
+  align-self: center;
+  object-fit: cover;
+  animation: fromBottom .4s ease forwards;
+}
+
+.input-title {
+	font-size: .8rem;
+	font-weight: 550;
+}
+
+.gambar-profil {
+  max-width: 180px;
+  align-self: center;
+  border: 3px solid var(--primary-soft);
+  border-radius: 999px;
+  animation: fromBottom .4s ease forwards;
+}
+
+.nama {
+  position: relative;
+  background-color: var(--primary-soft);
+  font-size: 1rem;
+  font-weight: 700;
+  width: 100%;
+  color: var(--primary);
+  padding: 12px;
+  align-self: center;
+  margin: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+}
+
+.nama-toko {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--text);
+  padding: 8px 20px;
+  text-align: center;
+  margin: 10px;
+  font-weight: 700;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+/* checkbox (mis. "Termasuk pajak", "Cetak QR/Barcode") */
+.label-data {
+  position: relative;
+  font-size: .95rem;
+  font-weight: 500;
+  color: var(--text);
+  padding: 10px 42px 10px 14px;
+  background: var(--surface-alt);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid var(--primary);
+  border-right: none;
+}
+
+.cek {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  accent-color: var(--primary);
+  width: 18px;
+  height: 18px;
+}
+
+.biasa {
+  background-color: transparent;
+  font-size: .85rem;
+  white-space: pre-line;
+  color: var(--text-muted);
+}
+
+.font-biasa {
+  background-color: transparent;
+  font-size: 1rem;
+  display: flex;
+  color: var(--text-muted);
+}
+
+.teks {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  padding: 5px;
+  text-align: left;
+}
+
+.jdl {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  padding: 4px 0;
+}
+
+/* ===== Grid dan daftar (mobile-first: 1 kolom, melebar di layar besar) ===== */
+.frame, .frame-khusus-produk {
+  width: 100%;
+  background: transparent;
+  padding: 0;
+  gap: 12px;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+.frame-khusus-produk {
+  display: flex;
+  flex-direction: column;
+}
+
+.prt {
+  background: transparent;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  padding: 15px;
+  border-radius: var(--radius);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  box-shadow: var(--shadow-sm);
+}
+
+/* dropdown metode pembayaran — panel biasa, bukan overlay */
+.dropdown {
+  display: none;
+  background: var(--primary-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  gap: 6px;
+  height: fit-content;
+  box-shadow: none;
+  animation: fromBottom 0.5s ease forwards;
+}
+
+.menu-titik-tiga {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: none;
+  background: var(--text);
+  color: white;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  z-index: 10;
+  box-shadow: var(--shadow);
+}
+
+.menu-titik-tiga.tampil {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+
+/* ===== Form fields ===== */
+.entry, .combo {
+  min-width: 50%;
+  font-size: .85rem;
+  padding: 10px;
+  margin-bottom: 5px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.entry::placeholder {
+  color: var(--text-muted);
+}
+
+/* ===== Table — mobile: scroll horizontal ===== */
+
+.table-produk {
+	width: 100%;
+  margin-top: 10px;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  font-size: .9rem;
+  animation: fromBottom 0.5s ease forwards;
+}
+
+.table-produk thead {
+  background: var(--primary);
+}
+
+.table-produk thead th {
+  text-align: center;
+  color: var(--text-on-primary);
+  font-weight: 600;
+  padding: 12px 14px;
+  font-size: .9rem;
+  letter-spacing: .2px;
+}
+
+.table-produk tbody tr {
+  cursor: pointer;
+  border-top: 1px solid var(--border);
+}
+
+.table-produk tbody tr:nth-child(even) {
+  background: var(--surface-alt);
+}
+.table-produk tbody tr:nth-child(odd) {
+  background: var(--surface);
+}
+
+.table-produk tbody tr:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.table-produk td {
+  padding: 10px 12px;
+  color: var(--text);
+  font-size: .9rem;
+}
+
+.table-produk .btn, .table-produk .btn-cancel {
+  padding: 8px 10px;
+  margin: 2px;
+  min-height: unset;
+}
+
+/* ===== Login screen ===== */
+.lc {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(14, 124, 102, .12);
+}
+
+.produk-pop {
+	position: fixed;
+	z-index: 200;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	overflow: auto;
+	background: var(--header-bg);
+}
+
+.lc-content {
+  width: 100%;
+  max-width: 360px;
+  max-height: 80vh;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: auto;
+  animation: fromBottom .4s ease forwards;
+}
+
+.lc-content h3 {
+  font-family: var(--font-display);
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 4px;
+  color: var(--primary);
+}
+
+.lc-content input {
+  font-size: 1rem;
+  padding: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+/* ===== Modal ===== */
+.custom-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(12, 30, 34, .5);
+  display: flex;
+  align-items: center;
+  backdrop-filter: blur(6px);
+  justify-content: center;
+  padding: 20px;
+}
+
+.custom-modal-content {
+  width: 100%;
+  max-width: 380px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 22px 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: fromBottom .35s ease forwards;
+  border-top: 5px solid var(--accent);
+}
+
+.custom-modal-content input {
+  font-size: 1rem;
+  padding: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+#modalTitle {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+#modalMessage {
+  font-size: .95rem;
+  color: var(--text-muted);
+  white-space: pre-line;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* ===== Loading overlay ===== */
+.load-container {
+  position: fixed;
+  z-index: 500;
+  width: 100%;
+  height: 100%;
+  background: rgba(246, 251, 249, .9);
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  backdrop-filter: blur(6px);
+  flex-direction: column;
+}
+
+.laptop {
+  font-size: 3rem;
+  padding: 5px;
+  color: var(--primary);
+  animation: happy 3s ease infinite;
+}
+
+.proses {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-soft);
+  border-radius: var(--radius-sm);
+  padding: 8px 24px;
+}
+
+@keyframes happy {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes fromBottom {
+  0% { transform: translateY(10px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* ===== Struk (nota cetak) — tetap monospace agar rapi di printer thermal ===== */
+#struk {
+  font-family: "Courier New", Courier, monospace;
+  font-size: .8rem;
+  color: #000;
+  width: 80mm;
+}
+
+@media (min-width: 600px) {
+  .big-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding: 10px;
+  }
+  .atas-tengah {
+  	display: flex;
+  	flex-direction: row;
+  	gap: 20px;
+  }
+  .tengah {
+  	width: 100%;
+  	display: flex;
+  	flex-direction: column;
+  	justify-content: flex-start;
+  	align-items: flex-start;
+  }
+  .profil-container {
+  	width: fit-content;
+  	min-width: 300px;
+  	height: fit-content;
+  }
+  .editor {
+    gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+  }
+  .right-container {
+  	flex: 1;
+  }
+  .frame-khusus-produk {
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+  }
+  .frame {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .container {
+    height: fit-content;
+    overflow: auto;
+  }
+  .image {
+    width: 100%;
+    height: 100%;
+  }
+  .checkout-container {
+    height: 100vh;
+    width: fit-content;
+  }
+  .lc-content {
+    padding: 24px;
+    max-width: fit-content;
+    width: 100%;
+  }
+  .container-horizontal {
+  	display: flex;
+  	flex-direction: row;
+  }
+  .combo {
+  	min-width: 0;
+  }
+}
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #struk, #struk * {
+    visibility: visible;
+  }
+  #struk {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80mm;
+  }
+}
+
+@page {
+  size: 80mm auto;
+  margin: 0;
+}
+</style>
+
+
+<body>
+	<div class="produk-pop hidden"></div>
+	<div class="load-container" style="display: none;">
+		<p class="laptop">💻</p>
+		<p class="proses">Processing...</p>
+	</div>
+	
+	<div id="struk" style="display: none;">
+		<h5 id="toko"></h5>
+		<p id="alamat"></p>
+		<span>Telp/WA: </span><span id="kontak"></span>
+		<p>==============================</p>
+		<span>Tgl: </span><span id="waktu"></span>
+		<span>No: </span><span id="no_trans"></span>
+		<span>Opr: </span><span id="operator"></span>
+		<br>
+		<p id="isi-keranjang"></p>
+		<p>==============================</p>
+		<span>Total: </span><span id="total"></span>
+		<span>Bayar: </span><span id="bayar"></span>
+		<span>Kembali: </span><span id="kembali"></span>
+		<p>==============================</p>
+		<p>Terima kasih telah berbelanja</p>
+		<br>
+		<p>Silahkan datang kembali!....</p>
+	</div>
+	
+  <div class="atas" id="ats">
+    <h3 onclick="showPopup()" class="tt" id=".3">&#x2630;</h3>
+    <h3 id="sapa" class="greet"></h2>
+      <div class="popupMenu hidden" id="popup">
+        <button onclick="dashboard()" class="invisible-btn" id="beranda">🌐 Dashboard</button>
+        <button onclick="pemilik.setup()" class="invisible-btn" id="pemilik">📋 Operasional</button>
+        <button onclick="opsiTransaksi.setup()" class="invisible-btn" id="transaksi">🛍️ Transaksi</button>
+        <button onclick="riwayat.setup()" class="invisible-btn" id="riwayat">🗓️ Riwayat</button>
+        <button onclick="lihatPesanan()" class="invisible-btn" id="pesanan">✉️ Pesanan</button>
+        <button onclick="logoutCek()" class="invisible-btn" id="logout">⬅️ Logout</button>
+      </div>
+    <h3 class="judul" id="jdl"></h3>
+  </div>
+  <div class="atas-tengah hidden" id="ateng"></div>
+  <div class="tengah" id="tgh"></div>
+  <div class="bawah" id="bwh"></div>
+  <div class="lc hidden" id="logincontainer">
+  	<div class="lc-content"></div>
+  </div>
+  <div id="customModal" class="custom-modal hidden">
+    <div class="custom-modal-content">
+        <h3 id="modalTitle">Judul</h3>
+        <p id="modalMessage">Pesan</p>
+        <input type="text" id="modalInput" placeholder="Masukkan sesuatu..." class="hidden">
+        <div class="modal-actions">
+            <button id="modalBtnOK" class="btn">OK</button>
+            <button id="modalBtnCancel" class="btn btn-cancel">Batal</button>
+        </div>
+    </div>
+  </div>
+</body>
+
+<script src="http://localhost:5000/chart.js"></script>
+<script>
+	async function generateBarcode(id, nama) {
+		const data = {
+			id: id,
+			nama: nama
+		}
+		if (await modalShow(confirm, "Buat barcode baru untuk produk " + nama + "?")) {
+			const upload = await postDataKedua("generate_barcode", data);
+			showInfo(upload);
+			produk.setup();
+		}
+	}
+	function pembuatJendela() {
+		makeWindow();
+		const wadah = document.querySelector(".lc-content");
+		wadah.innerHTML = "";
+		return wadah;
+	}
+	function grafikMaker(parent, jdl, subjdl, lbls, lbl, data) {
+		const wadah = document.createElement("div");
+		wadah.className = "container";
+		const judul = document.createElement("h3");
+		judul.className = "teks";
+		judul.textContent = jdl;
+		const subjudul = document.createElement("p");
+		subjudul.className = "biasa";
+		subjudul.textContent = subjdl;
+		const subparent = document.createElement("div");
+		subparent.className = "chart-wrap";
+		const canvas = document.createElement("canvas");
+		subparent.appendChild(canvas);
+		
+		new Chart(canvas, {
+			type: "bar",
+			data: {
+				labels: lbls,
+				datasets: [{
+					label: lbl,
+					data: data,
+					backgroundColor: "#0E5FA8",
+					borderRadius: 2,
+					maxBarThickness: 40
+				}]
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				plugins: {
+					legend: { display: false }
+				},
+				scales: {
+					y: {
+						beginAtZero: true,
+						grid: { color: "#f3f4f6" }
+					},
+					x: {
+						grid: { display: false }
+					}
+				}
+			}
+		})
+		for (const item of [judul, subjudul, subparent]) {
+			wadah.appendChild(item);
+		}
+		parent.appendChild(wadah);
+	}
+</script>
+<script>
+	
+	/*----------URL PART-------------*/
+	const url = "http://127.0.0.1:5000/";
+	/*----------END URL PART---------*/
+
+	const berhasil = "✅ Berhasil";
+	const gagal = "❌ Gagal";
+	const error = "⛔ Error";
+	const pesanGagal = "Terjadi kesalahan saat mengunggah data.";
+	const confirm = "❓Konfirmasi";
+  let user = "Fatimah Aliyana Putri";
+  let inisialCode = "F71_225577";
+  let formatUang = [];
+  let idDevice = "";
+  let keranjang = [];
+  let secondKeranjang = [];
+  let totalBelanja = 0;
+  
+  async function showInfo(hasil) {
+  	if (hasil) {
+  		await modalShow(hasil.stat, hasil.pesan);
+  	} else {
+  		await modalShow(gagal, pesanGagal);
+  	}
+  }
+  function resetJudul(teks) {
+  	document.getElementById("jdl").textContent = teks.toUpperCase()
+  }
+  function createNo() {
+  	const tipe1 = String(inisialCode).slice(0,1).toUpperCase();
+		const tipe2 = Math.floor(Math.random() * 100) + 10;
+		const tipe3 = Math.floor(Math.random() * 900000) + 100000;
+		return String(tipe1) + String(tipe2) + " " + String(tipe3);
+  }
+  function showPopupLoading() {
+  	document.querySelector(".load-container").style.display = "flex";
+  }
+  function hidePopupLoading() {
+  	document.querySelector(".load-container").style.display = "none";
+  }
+  
+  function makeWindow() {
+  	const wadah = document.querySelector(".lc");
+  	wadah.classList.remove("hidden");
+  	document.querySelector(".lc-content").innerHTML = "";
+  }
+  
+  function hideWindow() {
+  	document.querySelector(".lc").classList.add("hidden");
+  	document.querySelector(".lc-content").innerHTML = "";
+  }
+  
+  function makeCekbox(parent, label) {
+  	const lbl = makeLabel(label, "label-data");
+  	const cek = document.createElement("input");
+  	cek.type = "checkbox";
+  	cek.className = "cek";
+  	lbl.appendChild(cek);
+  	parent.appendChild(lbl);
+  	return cek;
+  }
+  
+  function makeCekTrx(parent, label) {
+  	const lbl = document.createElement("label");
+  	const inp = document.createElement("input");
+  	inp.type = "checkbox";
+  	inp.style.width = "fit-content";
+  	inp.style.margin = "0 5px";
+  	lbl.textContent = label;
+  	lbl.className = "biasa";
+  	lbl.appendChild(inp);
+  	
+  	parent.appendChild(lbl);
+  	return inp;
+  }
+  
+  function makeParent(kelas) {
+    const div = document.createElement("div");
+    div.className = kelas;
+    return div
+  }
+  
+  function makeButton(kelas, teks, command) {
+    const btn = document.createElement("button");
+    btn.className = kelas;
+    btn.textContent = teks;
+    btn.onclick = function() {
+      setTimeout(command, 300)
+    }
+    return btn;
+  }
+  
+  function pembuatButton(parent, btn) {
+  	for (const p of btn) {
+  		const [kelas, teks, command] = p;
+  		const button = makeButton(kelas, teks, command);
+  		parent.appendChild(button);
+  	}
+  }
+  
+  function pembuatCombo(parent, def, data) {
+		const select = document.createElement("select");
+		select.className = "combo";
+	
+		const defaultTop = document.createElement("option");
+		defaultTop.value = def;
+		defaultTop.textContent = def;
+		select.appendChild(defaultTop);
+		
+		for (const item of data) {
+			const op = document.createElement("option");
+			op.value = item;
+			op.textContent = item;
+			select.appendChild(op);
+		}
+	
+		parent.appendChild(select);
+		return select;
+	}
+
+  function pembuatEntry(parent, arrayObject) {
+    let entries = {}
+    for (const k of arrayObject) {
+      const [key, value, tipe] = k;
+      const lbl = makeLabel(key.replace(/_/g, " ").toUpperCase(), "input-title");
+      const ent = document.createElement("input");
+      ent.type = tipe;
+      ent.placeholder = value;
+      ent.className = "entry";
+      entries[key] = ent
+      parent.appendChild(lbl);
+      parent.appendChild(ent);
+    }
+    return entries;
+  }
+  
+  function pembuatFrame({
+    displayFrame = "block",
+    direction = "row",
+    grid = "1fr",
+    padding = "10px",
+    margin = "10px",
+    background = "white"
+  } = {}) {
+    let frame = document.createElement("div");
+    frame.className = "value-frame";
+    frame.style.display = displayFrame;
+    frame.style.margin = margin;
+    frame.style.padding = padding;
+    frame.style.background = background;
+  	frame.style.width = "100%";
+  	frame.style.overflow = "auto";
+    if (displayFrame === "flex") {
+      frame.style.flexDirection = direction;
+    } else if (displayFrame === "grid") {
+      frame.style.gridTemplateColumns = grid;
+    }
+    
+    return frame;
+  }
+  
+  class UserMenu {
+    constructor() {
+      this.user = null;
+      this.entries = null;
+      this.tambahPengguna = this.tambahPengguna.bind(this);
+      this.daftarPengguna = this.daftarPengguna.bind(this);
+    }
+    
+    async daftarPengguna() {
+      const hasil = Object.fromEntries(Object.entries(this.entries).map(([key, value]) => [key, value.value.trim()]));
+      
+      if (!this.user) {
+        if (hasil["status"].toLowerCase() !== "owner") {
+          await modalShow(gagal, "Pendaftaran pengguna pertama kali harus berstatus owner");
+          return;
+        }
+      }
+      if (![hasil.nama, hasil["status"], hasil.password, hasil.konfir].every(Boolean)) {
+        await modalShow(gagal, "Nama, status, kata sandi, konfirmasi kata sandi wajib diisi");
+        return;
+      }
+      if (hasil.password !== hasil.konfir) {
+        await modalShow(gagal, "Kata sandi dan konfirmasi kata sandi harus sama");
+        return;
+      }
+      const sama = this.user.find(p => p.nama.toLowerCase() === hasil.nama.toLowerCase) ?? null;
+      if (sama) {
+        await modalShow(gagal, "Pengguna atas nama " + hasil.nama + " telah terdaftar");
+        return
+      }
+      const dataUnggah = {
+        nama: hasil.nama,
+        status: hasil["status"],
+        password: hasil.password,
+        question: hasil.question,
+        answer: hasil.jawaban,
+        operator: user,
+        sumber: localStorage.getItem("idDevice")
+      }
+			const konfirmasi = await modalShow(confirm, "Data telah siap. Unggah sekarang?", false);
+			if (!konfirmasi) {
+				return;
+			}
+      const upload = await postDataKedua("tambah_user_baru", dataUnggah);
+      await modalShow(upload.stat, upload.pesan);
+      resetPop();
+      pengguna.setup();
+    }
+    
+    async tambahPengguna() {
+      this.user = await getData("user");
+      const cont = pembuatJendela();
+			
+      const judul = makeLabel("📝 INPUT FORM PENGGUNA BARU", "jdl");
+      const info_input = [
+        ["nama", "Masukkan nama", "text"],
+        ["status", "Masukkan status", "text"],
+        ["password", "Masukkan kata sandi", "password"],
+        ["konfir", "Masukkan konfirmasi password", "password"],
+        ["question", "Masukkan pertanyaan keamanan", "text"],
+        ["jawaban", "Masukkan jawaban", "text"]
+      ]
+      cont.appendChild(judul);
+      this.entries = pembuatEntry(cont, info_input);
+      const simpan = makeButton("btn", "Daftar", () => this.daftarPengguna());
+      const batal = makeButton("btn btn-cancel", "Batal", hideWindow);
+      for (const button of [simpan, batal]) {
+        cont.appendChild(button);
+      }
+    }
+  }
+  
+  class Pengguna {
+    constructor() {
+      this.user = null;
+      this.profil = null;
+      this.setProfil = this.setProfil.bind(this);
+      this.editProfil = this.editProfil.bind(this);
+      this.hapusProfil = this.hapusProfil.bind(this);
+      this.editFotoProfil = this.editFotoProfil.bind(this);
+      this.hapusFotoProfil = this.hapusFotoProfil.bind(this);
+      this.gantiFotoProfil = this.gantiFotoProfil.bind(this);
+      this.simpanEdit = this.simpanEdit.bind(this);
+    }
+    prepareFrames() {
+      const tengah = document.getElementById("tgh");
+      tengah.innerHTML = "";
+      this.mainBig = makeParent("big-container");
+      this.kiri = makeParent("profil-container");
+      this.kanan = makeParent("right-container")
+      for (const k of [this.kiri, this.kanan]) {
+      	this.mainBig.appendChild(k);
+      }
+      this.atas = makeParent("frame");
+      this.bawah = pembuatFrame({displayFrame: "flex", direction: "column", padding: "0", margin: "0"});
+      
+      this.wadah = document.querySelector(".lc");
+      this.content = makeParent("lc-content");
+      
+      for (const k of [this.atas, this.bawah]) {
+        this.kanan.appendChild(k);
+      }
+      tengah.appendChild(this.mainBig);
+    }
+    setAtas() {
+      this.atas.innerHTML = "";
+      this.frameUserAktif = makeParent("container");
+      this.frameUserAktif.style.display = "grid";
+      this.frameUserAktif.style.gridTemplateColumns = "repeat(3,1fr)";
+      this.frameIdDevice = makeParent("container");
+      const cariFr = makeParent("container");
+      const jdlcari = makeLabel("Cari pengguna", "jdl");
+      this.cari = makeEntry("Nama atau inisial code pengguna", "text");
+			cariFr.appendChild(jdlcari);
+			cariFr.appendChild(this.cari);
+			this.cari.oninput = () => this.setBawah();
+      for (const k of [this.frameUserAktif, this.frameIdDevice, cariFr]) {
+        this.atas.appendChild(k);
+      }
+    }
+    showUserAktif() {
+      const userAktif =this.user.find(p => p.inisial_code === inisialCode) ?? null;
+      if (userAktif) {
+        const info = [
+          ["Nama", userAktif.nama],
+          ["Status", userAktif["status"]],
+          ["Inisial code", userAktif.inisial_code]
+        ]
+        for (const f of info) {
+          const [key, value] = f;
+          const label = makeLabel(key, "jdl");
+          const titik = makeLabel(":", "jdl");
+          const isi = makeLabel(value, "jdl");
+          for (const p of [label, titik, isi]) {
+            this.frameUserAktif.appendChild(p);
+          }
+        }
+      }
+    }
+    showIdDevice() {
+      const id = localStorage.getItem("idDevice");
+      const label = makeLabel("ID DEVICE: " + id, "nama");
+      this.frameIdDevice.appendChild(label);
+    }
+    async simpanEditUser(id, namaLama) {
+    	const hasil = Object.fromEntries(Object.entries(this.entryEdit).map(([key, value]) => [key, value.value.trim()]));
+    	if (![hasil.nama, hasil["status"], hasil.pertanyaan, hasil.jawaban].every(Boolean)) {
+    		await modalShow(gagal, "Seluruh data harus diisi");
+    		return;
+    	}
+    	const data = {
+    		namaLama: namaLama,
+    		nama: hasil.nama,
+    		status: hasil["status"],
+    		pertanyaan: hasil.pertanyaan,
+    		jawaban: hasil.jawaban,
+    		id: id
+    	}
+    	if (await modalShow(confirm, "Data telah siap. Upload sekarang?")) {
+    		const up = await postDataKedua("edit_user", data);
+    		if (!up) {
+    			await modalShow(gagal, pesanGagal);
+    		} else {
+    			await modalShow(up.stat, up.pesan);
+    		}
+    		resetPop();
+    		pengguna.setup();
+    	}
+    }
+    async editUser(id) {
+    	const pengguna = this.user.find(p => p.inisial_code === id) ?? null;
+    	if (pengguna) {
+    		const parent = pembuatJendela();
+    		
+    		const for_entries = [];
+    		for (const [key, val] of Object.entries(pengguna)) {
+    			if (!["password", "id", "inisial", "inisial_code"].includes(key.toLowerCase())) {
+    				for_entries.push(
+    					[key, "Masukkan " + key.toLowerCase() + " baru", "text"]
+    				);
+    			}
+    		}
+    		
+    		const judul = makeLabel("📝 Edit data " + pengguna.nama, "nama");
+    		parent.appendChild(judul);
+    		this.entryEdit = pembuatEntry(parent, for_entries);
+    		const btns = [
+    			["btn", "Simpan", () => this.simpanEditUser(id, pengguna.nama)],
+    			["btn btn-cancel", "Batal", hideWindow]
+    		]
+    		for (const [key, val] of Object.entries(this.entryEdit)) {
+    			val.value = key.toLowerCase() !== "jawaban" ? pengguna[key] : "";
+    		}
+    		pembuatButton(parent, btns);
+    	}
+    }
+    async hapusUser(id) {
+    	const nama = this.user.find(p => p.inisial_code === id)?.nama ?? null;
+    	if (nama === null) {
+    		await modalShow(gagal, "Nama kosong");
+    		return;
+    	}
+    	if (await modalShow(confirm, "Hapus pengguna sekarang?")) {
+    		const data = {
+    			id: id,
+    			nama: nama
+    		}
+    		const hapus = await postDataKedua("hapus_user", data);
+    		if (!hapus) {
+    			await modalShow(gagal, pesanGagal);
+    		} else {
+    			await modalShow(hapus.stat, hapus.pesan);
+    		}
+    		pengguna.setup();
+    	}
+    }
+    async setBawah() {
+    	const findText = this.cari.value.trim();
+      this.bawah.innerHTML = "";
+      const mainContainer = makeParent("prt");
+      for (const p of this.user) {
+      	if (p.nama.toLowerCase().includes(findText.toLowerCase()) || p.inisial_code.toLowerCase().includes(findText.toLowerCase())) {
+	        const frame = pembuatField(mainContainer, p.nama);
+	        const info = [
+	          ["Id: " + p.inisial_code, "biasa"],
+	          ["Status user: " + p["status"], "biasa"]
+	        ]
+	        for (const k of info) {
+	          const [teks, kelas] = k;
+	          const label = makeLabel(teks, kelas)
+	          frame.appendChild(label);
+	        }
+	        
+	        const gambar = await takePictures(p.nama + " " + p.inisial_code + ".jpeg", "folder_foto");
+	        const img = document.createElement("img");
+	        img.src = gambar;
+	        img.loading = "lazy";
+	        img.className = "image";
+	        frame.appendChild(img);
+	
+	        const btnOther = [
+	        	["btns", "📝 Edit", () => this.editUser(p.inisial_code)],
+	        	["btns", "🗑️ Hapus", () => this.hapusUser(p.inisial_code)]
+	        ]
+	        pembuatButton(frame, btnOther);
+	      }
+      }
+      this.bawah.appendChild(mainContainer);
+    }
+    async gantiFotoProfil() {
+    	const gambar = this.pilih.files[0];
+    	const form = new FormData();
+    	form.append("file", gambar);
+    	const konfirmasi = await modalShow(confirm, "Foto profil siap. Upload sekarang?");
+    	if (konfirmasi) {
+    		await uploadFile("upload_foto_profil", form);
+    		resetPop();
+    		pengguna.setup();
+    	}
+    }
+    async hapusFotoProfil() {
+    	const konfirmasi = await modalShow(confirm, "Apa anda yakin ingin menghapus foto profil toko?");
+    	if (konfirmasi) {
+    		const hapus = await postData("hapus_foto_profil", {});
+    		await modalShow(hapus.stat, hapus.pesan);
+    		resetPop();
+    		pengguna.setup();
+    	}
+    }
+    editFotoProfil() {
+    	const wdh = pembuatJendela();
+    	
+    	const judul = makeLabel("Edit dan hapus foto profil toko", "nama");
+    	this.pilih = document.createElement("input");
+    	this.pilih.type = "file";
+    	const preview = document.createElement("img");
+    	preview.className = "image";
+    	this.pilih.onchange = function(e) {
+    		const selected = e.target.files[0];
+    		if (selected) {
+    			const gbr = URL.createObjectURL(selected);
+    			preview.src = gbr;
+    			preview.style.display = "block";
+    		}
+    	}
+    	const btns = [
+    		["btn", "Ganti foto", this.gantiFotoProfil],
+    		["btn", "Hapus foto", this.hapusFotoProfil],
+    		["btn btn-cancel", "Batal", hideWindow]
+    	]
+    	
+    	for (const item of [judul, this.pilih, preview]) {
+    		wdh.appendChild(item);
+    	}
+    	for (const item of btns) {
+    		const [kelas, teks, command] = item;
+    		const btn = makeButton(kelas, teks, command);
+    		wdh.appendChild(btn);
+    	}
+    }
+    async simpanEdit() {
+    	const result = Object.fromEntries(Object.entries(this.entries).map(([key, value]) => [key, value.value.trim()]));
+    	if (![
+    		result.nama,
+    		result.alamat,
+    		result.kontak,
+    		result.email,
+    		result.website,
+    		result.jenis
+    	].every(Boolean)) {
+    		await modalShow(gagal, "Semua input data harus diisi");
+    		return;
+    	}
+    	if (await modalShow(confirm, "Ganti data profil toko sekarang")) {
+	    	const upload = await postDataKedua("tambah_profil", result);
+	    	if (!upload) {
+	    		await modalShow(error, pesanGagal);
+	    	} else {
+	    		await modalShow(upload.stat, upload.pesan);
+	    	}
+	    	resetPop();
+	    	pengguna.setup();
+    	}
+    }
+    editProfil() {
+    	const wadah = pembuatJendela();
+    	
+    	const judul = makeLabel("📝 Edit profil");
+    	const btns = [
+    		["btn", "Simpan", this.simpanEdit],
+    		["btn btn-cancel", "Batal", hideWindow]
+    	]
+    	wadah.appendChild(judul);
+    	const ents = [
+    		["nama", "Masukkan nama baru", "text"],
+    		["alamat", "masukkan alamat baru", "text"],
+    		["kontak", "Masukkan telepon / Whatsapp baru", "number"],
+    		["email", "Masukkan email baru", "email"],
+    		["website", "Masukkan website baru", "text"],
+    		["jenis", "Masukkan jenis usaha baru", "text"]
+    	]
+    	const pr = this.profil[0] ?? {};
+    	this.entries = pembuatEntry(wadah, ents);
+    	for (const [key, value] of Object.entries(this.entries)) {
+    		value.value= pr[key] ?? "";
+    	}
+    	
+    	for (const btn of btns) {
+    		const [kelas, teks, command] = btn;
+    		const button = makeButton(kelas, teks, command);
+    		wadah.appendChild(button);
+    	}
+    }
+    async hapusProfil() {
+    	if (await modalShow(confirm, "Anda yakin ingin menghapus profil toko?")) {
+    		const hapus = await postDataKedua("hapus_profil", {"data": 1});
+    		if (!hapus) {
+    			await modalShow(error, pesanGagal);
+    		} else {
+    			await modalShow(hapus.stat, hapus.pesan);
+    		}
+    		resetPop();
+    		pengguna.setup();
+    	}
+    }
+    async hapusFile(path) {
+    	const splitPath = path.split(/[\\/]+/)
+    	const namaLama = splitPath.at(-1);
+    	if (await modalShow(confirm, "Apakah Anda yakin ingin menghapus " + namaLama + "?")) {
+    		const data = {
+    			path: path
+    		}
+    		const hps = await postDataKedua("hapus_foto", data);
+    		if (!hps) {
+    			await modalShow(error, pesanGagal);
+    		} else {
+    			await modalShow(hps.stat, hps.pesan);
+    		}
+    		pengguna.setup();
+    	}
+		}
+    async gantiNamaFile(path) {
+    	const splitPath = path.split(/[\\/]+/);
+    	const namaLama = splitPath.at(-1);
+    	const ekstensiFile = namaLama.split(".").at(-1);
+    	const namaBaru = await modalShow("Nama baru", `Masukkan nama baru untuk ${namaLama} tanpa ekstensi file`, true);
+    	if (namaBaru && namaLama) {
+    		const data = {
+    			nama_baru: namaBaru,
+    			path_lama: path,
+    			ekstensi: "." + ekstensiFile
+    		}
+    		if (await modalShow(confirm, "Data telah siap. Ganti nama file sekarang?")) {
+	    		const rename = await postDataKedua("ganti_nama_file", data);
+	    		if (!rename) {
+	    			await modalShow(error, pesanGagal);
+	    		} else {
+	    			await modalShow(rename.stat, rename.pesan);
+	    		}
+	    		pengguna.setup();
+	    		}
+	    	}
+    }
+    async kelolaQr() {
+    	this.bawah.innerHTML = "";
+    	try {
+    		const files = await fetch(url + "get_files/folder_foto");
+    		const filesQr = await files.json()
+    		const main = makeParent("prt")
+    		this.bawah.appendChild(main);
+    		for (const path of filesQr) {
+    			const frame = makeParent("container");
+    			frame.style.position = "relative";
+    			const pathSplit = path.split(/[\\/]+/);
+    			const namaFile = pathSplit.at(-1);
+    			const up = pembuatFrame({background: "transparent", displayFrame: "flex", direction: "column"});
+    			const labelNama = makeLabel(namaFile, "nama");
+    			const gambarJadi = await takePictures(namaFile, "folder_foto");
+    			const image = document.createElement("img");
+    			image.className = "image";
+    			image.src = gambarJadi;
+    			image.loading = "lazy";
+    			const btng = document.createElement("button");
+    			btng.style.background = "transparent";
+    			btng.style.border = "none";
+    			btng.textContent = "•••";
+    			
+    			const menu = document.createElement("div");
+    			menu.className = "menu-titik-tiga";
+					document.body.appendChild(menu);
+    			btng.onclick = (e) => {
+						const sedangTampil = menu.classList.contains("tampil");
+						document.querySelectorAll(".menu-titik-tiga").forEach(m => m.classList.remove("tampil"));
+						if (!sedangTampil) {
+							const rect = btng.getBoundingClientRect();
+							menu.style.position = "fixed";
+							menu.style.top = rect.bottom + "px";
+							menu.style.left = rect.left + "px";
+							menu.classList.add("tampil");
+						}
+					}
+					const buttonPopup = [
+						["btn-khusus-popup", "Hapus", () => this.hapusFile(path)],
+						["btn-khusus-popup", "Ganti nama", () => this.gantiNamaFile(path)]
+					]
+					pembuatButton(menu, buttonPopup);
+    			for (const item of [image, btng]) {
+    				up.appendChild(item);
+    			}
+    			for (const item of [up, labelNama]) {
+    				frame.appendChild(item);
+    			}
+    			main.appendChild(frame);
+    		}
+    	} catch (e) {
+    		await modalShow(error, e);
+    	}
+    }
+    async terimaUser(id) {
+    	const data = this.permintaan.find(p => p.id === id)?.data ?? null;
+    	const dataHasil = JSON.parse(data);
+    	if (await modalShow(confirm, `Anda akan menyetujui permintaan pendaftaran dari ${dataHasil.nama}. Lanjutkan?`)) {
+    		const upload = await postDataKedua("approve_new_user", {id: id});
+    		if (upload.stat.toLowerCase() === "berhasil") {
+    			this.hapusPermintaanUser(id);
+    		} else {
+    			await modalShow(upload.stat, upload.pesan);
+    		}
+    	}
+    }
+    async hapusPermintaanUser(id) {
+    	if (await modalShow(confirm, "Hapus sekarang?")) {
+    		const hapus = await postDataKedua("hapus_permintaan_user", {id: id});
+    		if (!hapus) {
+    			await modalShow(gagal, pesanGagal);
+    		} else {
+    			await modalShow(hapus.stat, hapus.pesan);
+    		}
+    		this.setup();
+    	}
+    }
+    async hapusSemuaPermintaan() {
+    	if (await modalShow(confirm, "Hapus semua data permintaan pendaftaran?")) {
+    		const hapus = await postDataKedua("hapus_seluruh_permintaan_daftar", {data: 1});
+    		if (hapus) {
+    			await modalShow(hapus.stat, hapus.pesan);
+    		} else {
+    			await modalShow(gagal, pesanGagal);
+    		}
+    	}
+    }
+    tinjauPendaftaran() {
+    	this.bawah.innerHTML = "";
+    	const atas = pembuatFrame({displayFrame: "flex", direction: "row", background: "var(--surface-alt)"});
+    	const wadah = makeParent("frame-khusus-produk");
+    	for (const item of this.permintaan) {
+    		const frame = makeParent("container");
+    		const frameShow = pembuatFrame({displayFrame: "grid", grid: "repeat(3,1fr)"});
+    		let info = [
+    			["ID", item.id],
+    			["IP ADDRESS", item.ip],
+    			["WAKTU", item.waktu]
+    		]
+    		const data = JSON.parse(item.data);
+    		for (let [key, value] of Object.entries(data)) {
+    			if (!["password", "konf", "answer"].includes(key)) {
+    				info.push([key.toUpperCase(), value]);
+    			} else {
+    				info.push([key.toUpperCase(), "*".repeat(value.length)]);
+    			}
+    		}
+    		for (const item of info) {
+    			const [teks, val] = item;
+    			const label = makeLabel(teks, "teks");
+    			const titik = makeLabel(":", "teks");
+    			const labval = makeLabel(val, "teks");
+    			for (const elemen of [label, titik, labval]) {
+    				frameShow.appendChild(elemen);
+    			}
+    		}
+    		const buttons = [
+    			["btn", "Terima", () => this.terimaUser(item.id)],
+    			["btn btn-cancel", "Hapus", () => this.hapusPermintaanUser(item.id)]
+    		]
+    		frame.appendChild(frameShow);
+    		for (const btn of buttons) {
+    			const [kelas, teks, command] = btn;
+    			const bt = makeButton(kelas, teks, command);
+    			frame.appendChild(bt);
+    		}
+    		wadah.appendChild(frame);
+    	}
+    	const btnClear = makeButton("btn", "🗑️ Hapus semua", () => this.hapusSemuaPermintaan());
+    	atas.appendChild(btnClear);
+    	this.bawah.appendChild(atas);
+    	this.bawah.appendChild(wadah);
+    }
+    async simpanQrPembayaran() {
+    	const bank = this.entriesQrBaru.bank.value.trim();
+    	const nama = this.entriesQrBaru.nama.value.trim();
+    	const norek = this.entriesQrBaru.norek.value.trim();
+    	const foto = this.pilih.files[0];
+    	if (![bank, nama, norek, foto].every(Boolean)) {
+    		await modalShow(gagal, "Data tidak lengkap");
+    		return;
+    	}
+    	if (await modalShow(confirm, "Tambahkan data pembayaran " + nama + " " + bank + " sekarang?")) {
+    		const data = {bank: bank, nama: nama, norek: norek};
+    		const formData = new FormData();
+    		formData.append("data_json", new Blob([JSON.stringify(data)], { type: "application/json" }));
+    		formData.append("data_qr", foto, bank + nama + ".jpeg");
+    		
+    		try {
+    			const res = await fetch(url + "upload_pembayaran", {
+    				method: "POST",
+    				body: formData,
+    			});
+    			const hasil = await res.json();
+    			await modalShow(hasil.stat, hasil.pesan);
+    			this.kelolaMediaBayar();
+    		} catch (er) {
+    			await modalShow(error, er);
+    		}
+    	}
+    }
+    mediaBayarBaru() {
+    	const parent = pembuatJendela();
+    	const judul = makeLabel("MEDIA PEMBAYARAN BARU", "teks");
+    	parent.appendChild(judul);
+    	const entr = [
+    		["nama", "Nama pemilik", "text"],
+    		["bank", "Bank", "text"],
+    		["norek", "Nomor rekening", "number"]
+    	]
+    	this.entriesQrBaru = pembuatEntry(parent, entr);
+    	const pratinjau = document.createElement("img");
+    	pratinjau.className = "image";
+    	this.pilih = document.createElement("input");
+    	this.pilih.type = "file";
+    	this.pilih.onchange = function(e) {
+    		const selected = e.target.files[0];
+    		if (selected) {
+    			const pict = URL.createObjectURL(selected);
+    			pratinjau.src = pict;
+    			pratinjau.style.display = "block";
+    		}
+    	}
+    	const btns = [
+    		["btn", "Simpan", () => this.simpanQrPembayaran()],
+    		["btn btn-cancel", "Batal", hideWindow]
+    	]
+    	for (const p of [pratinjau, this.pilih]) {
+    		parent.appendChild(p);
+    	}
+    	pembuatButton(parent, btns);
+    }
+    async hapusPembayaran(id, nama, bank) {
+    	if (await modalShow(confirm, "Hapus rekening?", false)) {
+    		const namaFile = bank + nama + ".jpeg";
+    		const hapus = await postDataKedua("hapus_rekening", {id: id, nama: namaFile});
+    		if (!hapus) {
+    			await modalShow(gagal, pesanGagal);
+    		} else {
+    			await modalShow(hapus.stat, hapus.pesan);
+    		}
+    		this.kelolaMediaBayar();
+    	}
+    }
+    async kelolaMediaBayar() {
+			this.bawah.innerHTML = "";
+			const atas = pembuatFrame({displayFrame: "flex", direction: "row"});
+			atas.style.justifyContent = "flex-end";
+			const bawah = makeParent("prt");
+			
+			const newQr = makeButton("btn", "➕ Tambah", () => this.mediaBayarBaru());
+			atas.appendChild(newQr);
+			
+			this.rekening = await getData("media_bayar");
+			this.rekening.forEach(async item => {
+				const parent = makeParent("container");
+				const lbls = [
+					[item.nama_pemilik.toUpperCase(), "nama"],
+					["BANK: " + item.bank, "teks"],
+					["NOMOR REKENING: " + item.nomor_rekening, "teks"]
+				]
+				for (const data of lbls) {
+					const [teks, style] = data;
+					const label = makeLabel(teks, style);
+					parent.appendChild(label);
+				}
+				const pict = await takePictures(item.bank + item.nama_pemilik + ".jpeg", "folder_pembayaran");
+				const gambar = document.createElement("img");
+				gambar.src = pict;
+				gambar.className = "image";
+				gambar.loading = "lazy";
+				parent.appendChild(gambar);
+				
+				const hapus = makeButton("btn btn-cancel", "Hapus", () => this.hapusPembayaran(item.id, item.nama_pemilik, item.bank));
+				parent.appendChild(hapus);
+				bawah.appendChild(parent);
+			})
+			for (const k of [atas, bawah]) {
+				this.bawah.appendChild(k);
+			}
+		}
+    async setProfil() {
+      this.permintaan = await getDt("permintaan_pendaftaran_user");
+    	try {
+    		const f1 = pembuatField(this.kiri, "manajemen profil");
+    		const pict = await takePictures("foto profil.png", "folder_foto");
+    		const pr = this.profil[0] ?? {};
+    		const nama = makeLabel(pr.nama ?? "", "nama-toko");
+    		const gambar = document.createElement("img");
+    		gambar.src = pict;
+    		gambar.loading = "lazy";
+    		gambar.className = "gambar-profil";
+    		const infoFrame = makeParent("container");
+    		const infoProfil = [
+    			["📍", pr.alamat ?? ""],
+        	["📞", pr.kontak ?? ""],
+        	["📧", pr.email ?? ""],
+        	["🌐", pr.website ?? ""],
+        	["🛒", pr.jenis ?? ""]
+        ]
+        for (const item of infoProfil) {
+        	const [teks, info] = item;
+        	const labelTeks = makeLabel(teks + " " + info, "label-data");
+        	infoFrame.appendChild(labelTeks);
+        }
+        const btn = [
+        	["btns", "🖼️ Edit foto profil", this.editFotoProfil],
+        	["btns", "📝 Edit", this.editProfil],
+        	["btns", "🗑️ Hapus", this.hapusProfil]
+        ]
+        for (const button of btn) {
+        	const [kelas, teks, command] = button;
+        	const btn = makeButton(kelas, teks, command);
+        	infoFrame.appendChild(btn);
+        }
+        const menuFrame = pembuatField(this.kiri, "menu utama");
+        const btnMenu = [
+        	["btn btn-cancel", "➕ Tambah pengguna", userMenu.tambahPengguna],
+        	["btn btn-cancel", "🖼️ Kelola Foto", () => this.kelolaQr()],
+        	["btn btn-cancel", "🏧 Media pembayaran", () => this.kelolaMediaBayar()]
+        ]
+        pembuatButton(menuFrame, btnMenu);
+        const req = makeButton("btn btn-cancel", "®️ Tinjau pendaftaran", () => this.tinjauPendaftaran());
+        const span = document.createElement("span");
+        span.className = "badge";
+        req.appendChild(span);
+        menuFrame.appendChild(req);
+        span.textContent = this.permintaan.length;
+        for (const item of [nama, gambar, infoFrame]) {
+        	f1.appendChild(item);
+        }
+    	} catch (errorE) {
+    		await modalShow(error, errorE);
+    	}
+    }
+    async setup() {
+      const userMenu = new UserMenu();
+      this.profil = await getData("profil") ?? [];
+      this.user = await getData("user");
+      this.setProfil();
+      this.prepareFrames();
+      this.setAtas();
+      this.showUserAktif();
+      this.showIdDevice();
+      this.setBawah();
+    }
+  }
+  
+  function pembuatField(parent, teks) {
+  	const field = document.createElement("fieldset");
+  	field.className = "field";
+  	const legend = document.createElement("legend");
+  	legend.style.fontSize = "0.9rem";
+  	legend.style.fontWeight = "600";
+  	legend.textContent = teks.toUpperCase();
+  	field.appendChild(legend);
+  	parent.appendChild(field);
+  	return field;
+  }
+  
+  function makeLabel(teks, kelas) {
+    const lbl = document.createElement("p");
+    lbl.textContent = teks;
+    lbl.className = kelas;
+    return lbl;
+  }
+  
+  async function downloadNota(nama) {
+    const cek = await postData("periksa_file", {nama: nama});
+    if (!cek.ada) {
+      await modalShow(gagal, "File nota tidak tersedia");
+      return;
+    }
+    if (!nama) {
+      await modalShow(gagal, "Maaf, nota yang Anda minta belum tersedia!");
+      return
+    }
+    const konfirmasi = await modalShow(confirm, `Download nota ${nama} sekarang?`, false);
+    if (!konfirmasi) {
+      return;
+    }
+    try {
+      const res = await fetch(url + "download_nota/" + nama);
+      const blob = await res.blob();
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = nama;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    } catch (e) {
+      await modalShow(error, e);
+    }
+  }
+  
+  async function lihatPesanan() {
+    resetPop();
+    resetJudul("Pesanan");
+    const wadah = document.querySelector("#tgh");
+    wadah.innerHTML = "";
+    const pesanan = await getData("permintaan");
+    const data = pesanan.filter(p => p.jenis.toLowerCase() === "pesanan pembeli");
+    const head = `
+      <tr>
+          <th>Id</th>
+          <th>Waktu</th>
+          <th>Status</th>
+          <th>Pemesan</th>
+          <th>Dipesan oleh</th>
+          <th>Nota tersedia</th>
+      </tr>
+    `
+    const table = makeTable(head);
+    for (const k of data) {
+      const tr = document.createElement("tr");
+      const pesanan = JSON.parse(k.data);
+      const nama = "Nota_" + pesanan.nama + "_" + k.id + ".pdf";
+      const cari = {
+        nama: nama
+      }
+      const ada = await postData("periksa_file", cari);
+      let isi = null;
+      if (ada["ada"]) {
+        isi = "✅";
+      } else {
+        isi = "⏳";
+      }
+      tr.innerHTML = `
+        <td>${k.id}</td>
+        <td>${k.waktu}</td>
+        <td>${k["status"]}</td>
+        <td>${k.oleh}</td>
+        <td>${pesanan.nama}</td>
+        <td>${isi}</td>
+      `
+      tr.onclick = () => downloadNota(nama);
+      table.appendChild(tr);
+    }
+    wadah.appendChild(table);
+  }
+  
+  function resetPop() {
+    document.getElementById("popup").classList.add("hidden");
+    hideWindow();
+  }
+  
+  function formatUnit(str, sat) {
+    return str + " " + sat;
+  }
+  
+  function formatMataUang(uang) {
+    if (formatUang[1] === "kiri") {
+      return formatUang[0] + uang.toString().replace(/\B(?=(\d{3})+(?!\d))/g, formatUang[2]);
+    } else {
+      return uang.toString().replace(/\B(?=(\d{3})+(?!\d))/g, formatUang[2]) + formatUang[0];
+    }
+  }
+  
+  async function uploadFile(endpoint, file) {
+  	showPopupLoading();
+  	try {
+  		const res = await fetch(url + endpoint, {
+  			method: "POST",
+  			body: file
+  		});
+  		const r = await res.json()
+  		hidePopupLoading();
+  		await modalShow(r.stat, r.pesan);
+  	} catch (e) {
+  		hidePopupLoading();
+  		await modalShow(error, e);
+  	}
+  }
+  
+  async function postData(endpoint, data) {
+  	showPopupLoading();
+    try {
+      const res = await fetch(url + endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+      });
+      const d = await res.json();
+      hidePopupLoading();
+      return d;
+    } catch (error) {
+    	hidePopupLoading();
+      await modalShow(gagal, "Gagal upload data ke server");
+      return null;
+    };
+  }
+  
+  async function postDataKedua(endpoint, data) {
+  	showPopupLoading();
+    try {
+      const res = await fetch(url + "post_data/" + endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data)
+      });
+      const d = await res.json();
+      hidePopupLoading();
+      return d;
+    } catch (error) {
+    	hidePopupLoading();
+      await modalShow(gagal, "Gagal upload data ke server");
+      return null;
+    };
+  }
+  
+  async function takePictures(file="", folder="", age=86400) {
+  	try {
+  		const info = {
+  			file: file,
+  			folder: folder,
+  			age: age
+  		}
+  		const payload = JSON.stringify(info);
+  		const link = `get_all_pictures/${encodeURIComponent(payload)}`;
+  		const res = await fetch(url + link);
+  		if (!res.ok) throw new Error(`Status ${res.status}`);
+  		const blob = await res.blob();
+  		return URL.createObjectURL(blob);
+  	} catch (er) {
+  		await modalShow(error, er);
+  		return null;
+  	}
+  }
+
+  async function getDt(endpoint) {
+    try {
+      const response = await fetch(url + endpoint);
+      const data = await response.json();
+      return data;
+    } catch (e) {
+      await modalShow(error, e);
+      return null
+    }
+  }
+  
+  async function getData(endpoint) {
+    try {
+      const response = await fetch(url +"lihat_data/" + endpoint);
+      const data = await response.json();
+      return data;
+    } catch (e) {
+      await modalShow(error, e);
+      return null
+    }
+  }
+  
+  async function logoutCek() {
+    const konfirmasi = await modalShow(confirm, "Logout sekarang?", false);
+    if (konfirmasi) {
+      const data = {
+        "id": idDevice
+      };
+      const unggah = await postData("logout_delete", data);
+      await modalShow(unggah.stat || "", unggah.pesan);
+      window.location.href = url + "login_user";
+    }
+  }
+  
+  function addPajak(harga, status = 0, persen = 0) {
+  	let result = harga;
+  	if (status === 1) {
+  		result = Math.round(harga * (1 + persen / 100));
+  	}
+  	return result;
+  }
+  
+  function hitungPotonganTingkat(harga, min, hargaTingkat, status = 0, persen = 0) {
+  	let result = harga * min - hargaTingkat;
+  	if (status === 1) {
+  		result = result * (1 + persen / 100);
+  	}
+  	return result;
+  }
+  
+  function makeEntry(placeholder, tipe) {
+  	const ent = document.createElement("input");
+  	ent.type = tipe;
+  	ent.className = "entry";
+  	ent.placeholder = placeholder;
+  	return ent;
+  }
+  
+  function makeTable(head) {
+	  const table = document.createElement("table");
+	  table.className = "table-produk";
+	
+	  const thead = document.createElement("thead");
+	  thead.innerHTML = head;
+	
+	  const tbody = document.createElement("tbody");
+	
+	  table.appendChild(thead);
+	  table.appendChild(tbody);
+	
+	  const originalAppend = table.appendChild.bind(table);
+	
+	  table.appendChild = function(child) {
+	    if (child.tagName === "TR") {
+	      return tbody.appendChild(child);
+	    }
+	    return originalAppend(child);
+	  };
+	
+	  return table;
+	}
+
+  function resetJudul(teks) {
+    document.getElementById("jdl").innerHTML = teks;
+  }
+  
+  function modalShow(title, message, showInput = false) {
+    return new Promise((resolve) => {
+        const modal = document.getElementById("customModal");
+        document.getElementById("modalTitle").textContent = title;
+        document.getElementById("modalMessage").textContent = message;
+
+        const input = document.getElementById("modalInput");
+        input.classList.toggle("hidden", !showInput);
+        input.value = "";
+
+        const btnOK = document.getElementById("modalBtnOK");
+        const btnCancel = document.getElementById("modalBtnCancel");
+
+        const newOK = btnOK.cloneNode(true);
+        const newCancel = btnCancel.cloneNode(true);
+        btnOK.replaceWith(newOK);
+        btnCancel.replaceWith(newCancel);
+
+        modal.classList.remove("hidden");
+
+        newOK.onclick = function() {
+            modal.classList.add("hidden");
+            if (showInput) {
+                resolve(input.value || "");
+            } else {
+                resolve(true);
+            }
+        };
+
+        newCancel.onclick = function() {
+            modal.classList.add("hidden");
+            resolve(null);
+        };
+
+        input.onkeydown = function(e) {
+            if (e.key === "Enter") {
+                newOK.click();
+            }
+        };
+    });
+}
+  
+  function setIdProduk(id) {
+    idProdukAktif = id;
+  }
+ 
+  async function showPopup() {
+    document.getElementById("popup").classList.toggle("hidden");
+  }
+  
+  async function dashboard() {
+    idProdukAktif = "";
+    resetPop();
+    const wadah = document.getElementById("tgh");
+    wadah.innerHTML = "";
+    document.getElementById("bwh").innerHTML = "";
+    document.getElementById("jdl").innerHTML = "Dashboard";
+    document.getElementById("sapa").innerHTML = `<span class="wave">🙋</span> Halo, ${user}`;
+    const result = await getDt("get_data_sold_out_today/hari_ini");
+
+    const container = document.createElement("div");
+    container.className = "container";
+    container.id = "cnt";
+    
+    const judul = document.createElement("h3");
+    judul.textContent = "Data hari ini";
+    judul.className = "jdl";
+    container.appendChild(judul);
+    
+    const label = ["Pemasukan: " + formatMataUang(result.total), "Keuntungan: " + formatMataUang(result.laba), "Produk terjual: " + formatUnit(result.terjual, "unit")];
+    label.forEach((i) => {
+      const lbl = document.createElement("p");
+      lbl.textContent = i;
+      lbl.className = "label-data";
+      container.appendChild(lbl);
+    });
+    wadah.appendChild(container);
+    
+    const head = `
+      <tr>
+        <th>No</th>
+        <th>Nama produk</th>
+        <th>Terjual</th>
+        <th>Total</th>
+        <th>Laba</th>
+      </tr>
+    `
+    const dataTerjual = result.data;
+    const urut = dataTerjual.sort((a, b) => b.terjual - a.terjual);
+    const tabel = makeTable(head);
+    const tbody = document.createElement("tbody");
+    
+    urut.forEach((item, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${i+1}</td>
+        <td>${item.nama}</td>
+        <td>${formatUnit(item.terjual, "unit")}</td>
+        <td>${formatMataUang(item.total)}</td>
+        <td>${formatMataUang(item.laba)}</td>
+      `;
+      tbody.appendChild(tr);
+    })
+    tabel.appendChild(tbody);
+    wadah.appendChild(tabel);
+  }
+  
+  async function validasiLogin() {
+  	resetPop();
+  	const format = await getData("pengaturan_format");
+    formatUang = JSON.parse(format[0]["format_uang"]);
+    
+    const params = new URLSearchParams(window.location.search);
+    idDevice = params.get("idev") ?? null;
+    user = params.get("user") || user;
+    inisialCode = params.get("id") || inisialCode;
+    dashboard();
+  }
+
+  class Pemilik {
+  	constructor() {
+  		this.setup = this.setup.bind(this);
+  		this.setBawahButtons = this.setBawahButtons.bind(this);
+  	}
+  	
+  	async setBawahButtons() {
+  		const infoButton = [
+   			["🧕 Profil & Pengguna", async () => {await pengguna.setup();}],
+  			["📦 Produk", async () => {await produk.setup();}],
+  			["🧾 Pajak", async () => {await pajak.setup();}],
+  			["👤 Supplier & Customer", async () => {await cs.setup();}],
+  			["💳 Pengeluaran", async () => {await biaya.setup();}]
+  		]
+  		for (const item of infoButton) {
+  			const [teks, command] = item;
+  			const btn = makeButton("btn", teks, command);
+  			this.bawah.appendChild(btn);
+  		}
+  	}
+  	
+  	setup() {
+  		resetPop();
+  		this.tengah = document.getElementById("tgh");
+  		this.bawah = document.getElementById("bwh");
+  		for (const div of [this.tengah, this.bawah]) {
+  			div.innerHTML = "";
+  		}
+  		this.setBawahButtons();
+  		pengguna.setup();
+  	}
+  	
+  }
+  
+  document.addEventListener("click", (e) => {
+		if (!e.target.closest(".menu-titik-tiga") && !e.target.closest("button")) {
+			document.querySelectorAll(".menu-titik-tiga").forEach(m => m.classList.remove("tampil"));
+		}
+	});
+	
+	let modalTerbukaSaatIni = false;
+	document.addEventListener("click", () => {
+		const modal = document.querySelector(".custom-modal");
+		const lc = document.querySelector(".lc");
+		modalTerbukaSaatIni =
+			!(modal?.classList.contains("hidden") ?? true) ||
+			!(lc?.classList.contains("hidden") ?? true);
+	}, true);
+
+	function tutupModalDanLc() {
+		document.querySelector(".custom-modal")?.classList.add("hidden");
+		document.querySelector(".lc")?.classList.add("hidden");
+	}
+
+	document.addEventListener("click", (e) => {
+		if (e.target.closest(".custom-modal-content") || e.target.closest(".lc-content")) {
+			return;
+		}
+		if (!modalTerbukaSaatIni) {
+			return;
+		}
+		tutupModalDanLc();
+	});
+
+	document.addEventListener("keydown", (e) => {
+		if (e.key !== "Escape") {
+			return;
+		}
+		if (e.target.closest(".custom-modal-content") || e.target.closest(".lc-content")) {
+			return;
+		}
+		tutupModalDanLc();
+	});
+	
+	window.addEventListener("pageshow", (event) => {
+	  if (event.persisted) {
+	  	window.location.href = url + "login_user";
+	  }
+	});
+	
+	class Pengeluaran {
+		constructor() {
+			this.pengeluaran = null;
+		}
+		prepareFrames() {
+			const atas = makeParent("container-horizontal");
+			this.cari = makeEntry("🔍 Cari pengeluaran", "text");
+			const bawah = makeParent("container");
+			this.tabel = makeTable(`
+				<tr>
+					<th>Waktu</th>
+					<th>Nama</th>
+					<th>Kategori</th>
+					<th>Jumlah</th>
+					<th>Harga</th>
+					<th>Total harga</th>
+					<th>Operator</th>
+					<th>Sumber</th>
+					<th>Keterangan</th>
+				</tr>
+			`)
+			this.kategori = pembuatCombo(atas, "Pilih kategori", [...new Set(this.pengeluaran.map(p => p.kategori))]);
+			this.ekspor = pembuatCombo(atas, "Pilih file ekspor", ["PDF", "CSV"]);
+			pembuatButton(atas, [
+				["btn", "🖨️ Ekspor", () => this.eksporPengeluaran()],
+				["btn", "➕ Tambah", () => this.tambahPengeluaran()]
+			])
+			bawah.appendChild(this.tabel);
+			for (const item of [this.cari, atas, bawah]) {
+				this.wadah.appendChild(item);
+			}
+		}
+		setTabel() {
+			for (const info of this.pengeluaran) {
+				const tr = document.createElement("tr");
+				tr.innerHTML = `
+					<td>${info.waktu}</td>
+					<td>${info.nama}</td>
+					<td>${info.kategori}</td>
+					<td>${info.jumlah} ${info.satuan_jumlah}</td>
+					<td>${formatMataUang(info.harga)}</td>
+					<td>${formatMataUang(info.total)}</td>
+					<td>${info.operator}</td>
+					<td>${info.sumber}</td>
+					<td>${info.keterangan}</td>
+				`
+				this.tabel.appendChild(tr);
+			}
+		}
+		async setup() {
+			this.pengeluaran = await getData("Pengeluaran");
+			this.wadah = document.getElementById("tgh");
+			this.wadah.innerHTML = "";
+			this.prepareFrames();
+			this.setTabel();
+		}
+	}
+	
+	class SupplierCustomer {
+		constructor() {
+			this.customer = null;
+			this.supplier = null;
+		}
+		
+		async simpanEditan(tipe, id, inp) {
+			const result = Object.fromEntries(Object.entries(inp).map(([key, val]) => [key, val.value.trim()]));
+			let data = this.supplier;
+			if (tipe.toLowerCase() === "customer") {
+				data = this.customer;
+			}
+			const item = data.find(p => Number(p.id) === Number(id)) ?? null;
+			if (item) {
+				for (const [key, value] of Object.entries(result)) {
+					item[key] = value;
+				}
+				if (await modalShow(confirm, "Data telah siap. Simpan sekarang?")) {
+					const ed = await postDataKedua("edit_" + tipe.toLowerCase(), item);
+					if (ed) {
+						await modalShow(ed.stat, ed.pesan);
+					} else {
+						await modalShow(gagal, pesanGagal);
+					}
+					this.setup();
+				}
+			}
+		}
+		
+		editData(tipe, id) {
+			let data = this.supplier;
+			if (tipe.toLowerCase() === "customer") {
+				data = this.customer;
+			}
+			const item = data.find(p => Number(p.id) === Number(id)) ?? null;
+			if (item) {
+				const wadah = pembuatJendela();
+				wadah.appendChild(makeLabel("Edit data " + tipe.toLowerCase() + " " + item.nama, "teks"));
+				
+				const dt = []
+				for (const [key, value] of Object.entries(item)) {
+					if (!["id", "id_device", "id_user", "password", "poin", "status_login"].includes(key.toLowerCase())) {
+						let tipe = "text";
+						if (key.toLowerCase() === "email") {
+							tipe = "email";
+						} else if (key.toLowerCase() === "kontak") {
+							tipe = "number";
+						}
+						dt.push(
+							[key, `Masukkan ${key} baru`, tipe]
+						)
+					}
+				}
+				const ent = pembuatEntry(wadah, dt);
+				for (const [key, value] of Object.entries(item)) {
+					if  (!["id", "id_device", "id_user", "password", "poin", "status_login"].includes(key.toLowerCase())) {
+						if (!value) {
+							ent[key].value = "";
+						} else {
+							ent[key].value = value;
+						}
+					}
+				}
+				pembuatButton(wadah, [
+					["btn", "Simpan", () => this.simpanEditan(tipe, id, ent)],
+					["btn btn-cancel", "Batal", () => {hideWindow();}]
+				])
+			}
+		}
+		
+		async simpanBaru(tipe, entry) {
+			const result = Object.fromEntries(Object.entries(entry).map(([key, val]) => [key, val.value.trim()]));
+			if (!result.nama || !result.alamat || !result.kontak) {
+				await modalShow(gagal, "Nama, alamat, dan nomor telepon wajib diisi");
+				return;
+			}
+			result["operator"] = user;
+			result["idDev"] = idDevice;
+			if (await modalShow(confirm, "Data telah siap. Simpan sekarang?")) {
+				const upload = await postDataKedua("tambah_" + tipe.toLowerCase(), result);
+				if (upload) {
+					await modalShow(upload.stat, upload.pesan);
+				} else {
+					await modalShow(gagal, pesanGagal);
+				}
+				this.setup();
+			}
+		}
+		
+		tambah(tipe) {
+			const forEntry = []
+			let data = this.supplier;
+			if (tipe.toLowerCase() === "customer") {
+				data = this.customer;
+			}
+			
+			for (const [key, value] of Object.entries(data[0])) {
+				if (!["id", "id_device", "id_user", "password", "status_login"].includes(key.toLowerCase())) {
+					let tipe = "text";
+					if (key.toLowerCase() === "email") {
+						tipe = "email";
+					} else if (key.toLowerCase() === "kontak") {
+						tipe = "number";
+					}
+					forEntry.push(
+						[key.toLowerCase(), `Masukkan ${key.toLowerCase()}...`, tipe]
+					)
+				}
+			}
+			const wadah = pembuatJendela();
+			wadah.appendChild(makeLabel(`Tambahkan ${tipe.toLowerCase()} baru`, "teks"));
+			const ent = pembuatEntry(wadah, forEntry);
+			pembuatButton(wadah, [
+				["btn", "Simpan", () => this.simpanBaru(tipe, ent)],
+				["btn btn-cancel", "Batal", () => {hideWindow();}]
+			])
+		}
+		
+		daftar(tipe) {
+			let data = this.customer;
+			if (tipe.toLowerCase() === "supplier") {
+				data = this.supplier;
+			}
+			this.bawah.innerHTML = "";
+			const tmp = document.createElement("div");
+			tmp.style.display = "flex";
+			this.bawah.appendChild(tmp);
+			tmp.appendChild(makeLabel("TABEL " + tipe.toUpperCase(), "teks"));
+			tmp.appendChild(makeButton("invisible-btn", `➕ Tambah ${tipe}`, () => this.tambah(tipe)));
+			const head = Object.keys(data[0]);
+
+			const headHtml = `
+				<tr>
+					${head.map(key => `<th>${key.replace(/_/g, " ").toUpperCase()}</th>`).join(`\n `)}
+					<th>Aksi</th>
+				</tr>
+			`
+			const tabel = makeTable(headHtml);
+			for (const item of data) {
+				const tr = document.createElement("tr");
+				let html = "";
+				for (const [key, value] of Object.entries(item)) {
+					let val = value;
+					if (["password", "jawaban"].includes(key.toLowerCase())) {
+						val = "********";
+					}
+					html += `<td>${val}</td>`
+				}
+				html += `
+					<td style="display: flex;">
+						<button class="btns" onclick="cs.editData('${tipe}', ${item.id})">📝</button>
+						<button class="btns" onclick="cs.hapusData('${tipe}', ${item.id})">🗑️</button>
+					</td>
+				`
+				tr.innerHTML = html;
+				tabel.appendChild(tr);
+			}
+			this.bawah.appendChild(tabel);
+		}
+		
+		async hapusData(tipe, id) {
+			if (await modalShow(confirm, `Hapus ${tipe} sekarang?`)) {
+				const hapus = await postDataKedua("hapus_" + tipe.toLowerCase(), {id: Number(id)});
+				if (hapus) {
+					await modalShow(hapus.stat, hapus.pesan);
+				} else {
+					await modalShow(gagal, pesanGagal);
+				}
+				this.setup();
+			}
+		}
+		
+		prepareFrames() {
+			const atas = makeParent("container-horizontal")
+			this.bawah = makeParent("container");
+			pembuatButton(atas, [
+				["btn", "Supplier", () => this.daftar("supplier")],
+				["btn", "Customer", () => this. daftar("customer")],
+			])
+			for (const x of [atas, this.bawah]) {
+				this.wadah.appendChild(x);
+			}
+		}
+		async setup() {
+			this.wadah = document.getElementById("tgh");
+			this.wadah.innerHTML = "";
+			this.customer = await getData("customer");
+			this.supplier = await getData("supplier");
+			this.prepareFrames();
+			this.daftar("supplier");
+		}
+	}
+	
+	class Pajak {
+		constructor() {
+			this.pajak = null;
+			this.riwayatPajak = null;
+		}
+		
+		hitung() {
+			this.totalPajak = this.riwayatPajak.reduce((sum, b) => sum + b.pajak, 0);
+			this.persen = 0;
+			this.aktif = 0;
+			if (this.pajak) {
+				const pjk = this.pajak[0];
+				this.persen = pjk.persen;
+				this.aktif = pjk.aktif;
+			}
+			this.rp = [];
+			for (const item of this.riwayatPajak) {
+				const ada = this.rp.find(p => p.nama.toLowerCase() === item.nama.toLowerCase()) ?? null;
+				if (ada) {
+					ada["pajak"] += item.pajak;
+				} else {
+					this.rp.push({
+						waktu: item.waktu,
+						nama: item.nama,
+						pajak: item.pajak
+					})
+				}
+			}
+		}
+		
+		prepareFrames() {
+			const atas = makeParent("big-container");
+			this.bawah = makeParent("container");
+			
+			const af = pembuatField(atas, "informasi pajak");
+			af.style.display = "grid";
+			af.style.gridTemplateColumns = "repeat(3,1fr)";
+			
+			const info = [
+				["Total pajak terkumpul", formatMataUang(Math.round(this.totalPajak))],
+				["Persentase pajak", formatUnit(this.persen, "%")]
+			]
+			
+			const bf = pembuatField(atas, "pengaturan persentase pajak");
+			this.aktifPjk = makeCekbox(bf, "Aktifkan pajak")
+			this.aktifPjk.checked = this.aktif;
+			this.aktifPjk.onchange = () => this.setAktifkanPajak();
+			
+			this.newPersen = makeEntry("Persentase pajak baru", "number");
+			const simpan = makeButton("btn btn-cancel", "Simpan", () => this.simpanPajak());
+			for (const x of [this.newPersen, simpan]) {
+				bf.appendChild(x);
+			}
+			
+			for (const item of info) {
+				const [teks, value] = item;
+				const lt = makeLabel(teks, "teks");
+				const ltd = makeLabel(":", "teks");
+				const val = makeLabel(value, "teks");
+				for (const x of [lt, ltd, val]) {
+					af.appendChild(x);
+				}
+			}
+			
+			for (const fr of [atas, this.bawah]) {
+				this.wadah.appendChild(fr);
+			}
+		}
+		
+		async simpanPajak() {
+			const persen = parseInt(this.newPersen.value.trim());
+			if (await modalShow(confirm, "Tetapkan persentase pajak menjadi " + persen + "%?")) {
+				const upload = await postDataKedua("pajak_persen", {persen: persen});
+				if (upload) {
+					await modalShow(upload.stat, upload.pesan);
+				} else {
+					await modalShow(gagal, pesanGagal);
+				}
+				this.setup();
+			}
+		}
+		async setAktifkanPajak() {
+			const aktif = this.aktifPjk.checked;
+			await postDataKedua("pajak_selalu_aktif", {aktif: aktif})
+		}
+		
+		showRiwayat() {
+			const tabel = makeTable(`
+				<tr>
+					<th>Waktu</th>
+					<th>Nama</th>
+					<th>Subtotal pajak</th>
+				</tr>
+			`)
+			for (const item of this.rp) {
+				const tr = document.createElement("tr");
+				tr.innerHTML = `
+					<td>${item.waktu}</td>
+					<td>${item.nama}</td>
+					<td>${formatMataUang(Math.round(item.pajak))}</td>
+				`
+				tabel.appendChild(tr);
+			}
+			this.bawah.appendChild(tabel);
+		}
+		
+		async setup() {
+			this.pajak = await getData("pajak");
+			this.riwayatPajak = await getData("riwayat_pajak");
+			const wadah = document.getElementById("tgh");
+			wadah.innerHTML = "";
+			this.wadah = makeParent("container");
+			wadah.appendChild(this.wadah);
+			this.hitung();
+			this.prepareFrames();
+			this.showRiwayat();
+		}
+	}
+	
+	class Produk {
+		constructor() {
+			this.produk = null;
+			this.tingkat_a = null;
+			this.tingkat_b = null;
+			this.produkPerKategori = null;
+		}
+		
+		tambahProdukBaru() {
+			this.kanan.innerHTML = "";
+			this.kanan.appendChild(makeLabel("Tambah produk baru", "jdl"));
+			const parent = makeParent("profil-container");
+			const kiri = makeParent("profil-container");
+			const kanan = makeParent("frame-khusus-produk");
+			
+			kiri.appendChild(makeLabel("Gambar katalog", "teks"));
+			const katalog = document.createElement("img");
+			katalog.className = "image";
+			katalog.src = null;
+			this.pilihGambar = document.createElement("input");
+			this.pilihGambar.type = "file";
+			this.pilihGambar.onchange = (e) => {
+				const selected = e.target.files[0];
+				if (selected) {
+					const url = URL.createObjectURL(selected);
+					katalog.src = url;
+					katalog.style.display = "block";
+				}
+			};
+			this.infoLabel = makeLabel("Kalkulasi produk", "biasa");
+			
+			const pr1 = makeParent("container");
+			this.info1 = pembuatEntry(pr1, [
+				["nama", "Masukkan nama", "text"],
+				["barcode", "Masukkan barcode", "number"],
+				["jumlah", "Masukkan jumlah stok", "number"],
+				["harga_beli", "Masukkan harga beli", "number"]
+			]);
+			
+			const pr2 = makeParent("container");
+			this.info2 = pembuatEntry(pr2, [
+				["isi_satuan", "Masukkan isi satuan", "number"],
+				["harga_jual", "Masukkan harga jual", "number"],
+				["poin", "Masukkan poin penjualan", "number"],
+				["stok_minimum", "Masukkan stok minimum", "number"]
+			])
+			this.info2.isi_satuan.oninput = () => this.hitungHargaModal();
+			
+			const pr3 = makeParent("container");
+			this.info3 = pembuatEntry(pr3, [
+				["kategori", "Masukkan kategori", "text"],
+				["satuan_beli", "Masukkan satuan beli", "text"],
+				["satuan_jual", "Masukkan satuan jual", "text"],
+				["supplier", "Masukkan supplier", "text"]
+			])
+			
+			const pr4 = makeParent("container");
+			this.newKategori = pembuatCombo(pr4, "Pilih kategori baru", [...new Set(this.produk.map(p => p.kategori))]);
+			this.newSatuanBeli = pembuatCombo(pr4, "Pilih satuan beli baru", [...new Set(this.produk.map(p => p.satuan_beli))]);
+			this.newSatuanJual = pembuatCombo(pr4, "Pilih satuan jual baru", [...new Set(this.produk.map(p => p.satuan_jual))]);
+			this.newSupplier = pembuatCombo(pr4, "Pilih supplier baru", [...new Set(this.produk.map(p => p.supplier))]);
+			
+			for (const x of [pr1, pr2, pr3, pr4]) {
+				kanan.appendChild(x);
+			}
+			
+			this.catatan = document.createElement("textarea");
+			this.catatan.className = "entry";
+			this.catatan.rows = "5";
+			this.catatan.cols = "40";
+			
+			for (const item of [katalog, this.pilihGambar, this.infoLabel]) {
+				kiri.appendChild(item);
+			}
+			
+			this.kanan.appendChild(parent);
+			for (const frame of [kiri, kanan]) {
+				parent.appendChild(frame);
+			}
+			this.exp = document.createElement('input');
+			this.exp.type = 'date';
+			this.exp.className = "entry";
+			this.exp.value = new Date().toISOString().split('T')[0];
+			parent.appendChild(this.exp);
+			parent.appendChild(this.catatan);
+			parent.appendChild(makeButton("btn", "Simpan", () => this.simpanProdukBaru()));
+		}
+		
+		async simpanProdukBaru() {
+			const r1 = Object.fromEntries(
+				Object.entries(this.info1).map(([key, val]) => [key, val.value.trim()])
+			);
+			const r2 = Object.fromEntries(
+				Object.entries(this.info2).map(([key, val]) => [key, val.value.trim()])
+			);
+			const r3 = Object.fromEntries(
+				Object.entries(this.info3).map(([key, val]) => [key, val.value.trim()])
+			);
+			const ktgr = this.newKategori.value;
+			const sb = this.newSatuanBeli.value;
+			const sj = this.newSatuanJual.value;
+			const sup = this.newSupplier.value;
+			
+			const kategori = ktgr.toLowerCase() !== "pilih kategori baru" ? ktgr : r3.kategori;
+			const satuanBeli = sb.toLowerCase() !== "pilih satuan beli baru" ? sb : r3.satuan_beli;
+			const satuanJual = sj.toLowerCase() !== "pilih satuan jual baru" ? sj : r3.satuan_jual;
+			const supplier = sup.toLowerCase() !== "pilih supplier baru" ? sup : r3.supplier;
+			const waktu = this.exp.value.trim();
+			
+			if (![
+				r1.nama,
+				r1.jumlah,
+				r1.harga_beli,
+				r2.harga_jual,
+				r2.isi_satuan
+			].every(Boolean)) {
+				await modalShow(gagal, "Nama, jumlah, harga beli, harga jual, dan isi satuan harus diisi");
+				return;
+			}
+			
+			try {
+				const hargaBeli = parseFloat(r1.harga_beli);
+				const jumlah = parseInt(r1.jumlah);
+				const hargaJual = parseFloat(r2.harga_jual);
+				const isiSatuan = parseInt(r2.isi_satuan);
+				const poin = parseInt(r2.poin);
+				const stokMinimum = parseInt(r2.stok_minimum);
+				const hargaModal = Math.round(hargaBeli / isiSatuan);
+				
+				const data = {
+					nama: r1.nama,
+					barcode: r1.barcode,
+					kategori: kategori,
+					catatan: this.catatan.value.trim(),
+					kadaluarsa: waktu,
+					satuan_beli: satuanBeli,
+					satuan_jual: satuanJual,
+					isi_satuan: isiSatuan,
+					supplier: supplier,
+					harga_beli: hargaBeli,
+					harga_modal: hargaModal,
+					harga_jual: hargaJual,
+					jumlah: jumlah,
+					stok_minimum: stokMinimum,
+					poin: poin,
+					operator: user,
+					sumber: idDevice
+				}
+				
+				if (await modalShow(confirm, "Data telah siap. Unggah sekarang?")) {
+					const upload = await postDataKedua("tambah_produk_baru", data);
+					if (upload) {
+						if (upload.stat.toLowerCase() === "berhasil") {
+							const fotoKatalog = this.pilihGambar.files[0];
+							if (fotoKatalog) {
+								const formData = new FormData();
+								formData.append("file", fotoKatalog, r1.nama + ".jpeg");
+								const uploadGambar = await fetch(url + "post_file/upload_foto_katalog", {
+									method: "POST",
+									body: formData
+								});
+								const res = await uploadGambar.json();
+								if (res.stat.toLowerCase() === "berhasil") {
+									await modalShow(berhasil, res.pesan);
+								} else {
+									await modalShow(gagal, "Data berhasil disimpan. Foto katalog gagal disimpan")
+								}
+							} else {
+								await modalShow(upload.stat, upload.pesan + "Katalog produk tidak disertakan");
+							}
+						} else {
+							await modalShow(upload.stat, upload.pesan);
+						}
+					} else {
+						await modalShow(gagal, pesanGagal);
+					}
+				}
+			} catch (er) {
+				await modalShow(error, er);
+			}
+		}
+		
+		hitungHargaModal() {
+			const hargaBeli = parseFloat(this.info1.harga_beli.value.trim());
+			const isi = parseInt(this.info2.isi_satuan.value.trim());
+			const hargaModal = Math.round(hargaBeli / isi);
+			this.infoLabel.textContent = "Harga modal produk: " + formatMataUang(hargaModal);
+		}
+		
+		findProduk(teks="") {
+			this.div.innerHTML = "";
+			const tabel = makeTable(`
+				<tr>
+					<th><button class="btn btn-cancel" onclick="produk.showAndHide()">&#9635;</button>  Barcode</th>
+					<th>Nama produk</th>
+					<th>Kategori</th>
+					<th>Jumlah stok</th>
+					<th>Harga modal</th>
+					<th>Harga jual</th>
+					<th>Aksi</th>
+				</tr>
+			`)
+			for (const item of this.produk) {
+				if (
+					item.nama.toLowerCase().includes(teks.toLowerCase()) ||
+					item.barcode.includes(teks) ||
+					item.kategori.toLowerCase().includes(teks.toLowerCase())
+				) {
+					const tr = document.createElement("tr");
+					tr.innerHTML = `
+						<td>${item.barcode}</td>
+						<td>${item.nama}</td>
+						<td>${item.kategori}</td>
+						<td>${item.jumlah} ${item.satuan_jual}</td>
+						<td>${formatMataUang(Math.round(item.harga_modal))}</td>
+						<td>${formatMataUang(item.harga_jual)}</td>
+						<td style="display: flex;">
+							<button class="btn btn-cancel" onclick="produk.detailProduk(${item.id_produk})">🔍</button>
+							<button class="btn btn-cancel" onclick="produk.tambahStok(${item.id_produk})">➕</button>
+							<button class="btn btn-cancel" onclick="produk.editProduk(${item.id_produk})">📝</button>
+							<button class="btn btn-cancel" onclick="produk.hapusProduk(${item.id_produk})">🗑</button>
+						</td>
+					`
+					tr.addEventListener("click", (e) => {
+						if (!e.target.closest("button")) {
+							this.showPicture(item.nama, item.id_produk);
+						}
+					})
+					tabel.appendChild(tr);
+				}
+			}
+			this.div.appendChild(tabel);
+		}
+		async showPicture(nama, id) {
+			const wadah = pembuatJendela();
+			const field = pembuatField(wadah, nama);
+			const gambar = await takePictures(nama + "_thumb.jpeg", "folder_katalog");
+			const pict = document.createElement("img");
+			pict.src = gambar;
+			pict.className = "image";
+			pict.loading = "lazy";
+			field.appendChild(pict);
+			pembuatButton(field, [
+				["btns2", "Tambah foto baru", () => this.gantiFotoKatalog(field, id)],
+				["btns2", "Buat barcode", () => generateBarcode(id, nama)]
+			])
+		}
+		async simpanGambarKatalog(nama, file) {
+			const fileGambar = file.files[0];
+			if (fileGambar) {
+				const formData = new FormData();
+				formData.append("file", fileGambar, nama + ".jpeg");
+				if (await modalShow(confirm, "Gambar sudah siap. Simpan sekarang?")) {
+					showPopupLoading();
+					try {
+						const res = await fetch(url + "post_file/upload_foto_katalog", {
+							method: "POST",
+							body: formData
+						});
+						const response = await res.json();
+						hidePopupLoading();
+						showInfo(response);
+					} catch (er) {
+						await modalShow(gagal, pesanGagal);
+					}
+				}
+			}
+		}
+		async gantiFotoKatalog(field, id) {
+			field.innerHTML = "";
+			const legend = document.createElement("legend");
+			legend.className = "judul";
+			const prev = document.createElement("img");
+			prev.className = "image";
+			const input = document.createElement("input");
+			input.type = "file";
+			input.accept = "image/*";
+			input.capture = "environment";
+			input.onchange = () => {
+				const selected = input.files[0];
+				if (selected) {
+					const img = URL.createObjectURL(selected);
+					prev.src = img;
+					prev.style.display = "block";
+				}
+			}
+			const produk = await getData("produk");
+			const realName = produk.find(p => String(p.id_produk) === String(id))?.nama ?? "";
+			if (realName) {
+				legend.textContent = realName;
+				const btn = makeButton("btn", "Simpan", () => this.simpanGambarKatalog(realName, input));
+				for (const item of [legend, prev, input, btn]) {
+					field.appendChild(item);
+				}
+			}
+		}
+		editProduk(id) {
+			this.itemEdit = this.produk.find(item => String(item.id_produk) === String(id)) ?? null;
+			if (this.itemEdit) {
+				const wadah = pembuatJendela();
+				const pr = makeParent("editor");
+				wadah.appendChild(makeLabel("📝 Edit produk", "teks"));
+				wadah.appendChild(pr);
+				const pr1 = makeParent("container");
+				const pr2 = makeParent("container");
+				const pr3 = makeParent("container");
+				const pr4 = makeParent("container");
+				
+				this.ent = {}
+				Object.entries(this.itemEdit).forEach((it, i) => {
+					const [key, val] = it;
+					let tipe = "text";
+					if (![
+						"id",
+						"id_produk",
+						"barcode",
+						"jumlah_tertinggi"
+					].includes(key.toLowerCase())) {
+						if ([
+							"harga_beli",
+							"harga_jual",
+							"harga_modal",
+							"isi_satuan",
+							"jumlah",
+							"poin",
+							"stok_minimum"
+						].includes(key.toLowerCase())) {
+							tipe = "number";
+						}
+						const entry = makeEntry("Masukkan " + key.replace(/_/g, " ") + " baru", tipe);
+						entry.value = val;
+						let parent = null;
+						if (i < 6) {
+							parent = pr1;
+						} else if ( i >= 6 && i < 12) {
+							parent = pr2;
+						} else {
+							parent = pr3;
+						}
+						parent.appendChild(makeLabel(key.replace(/_/g, " ").toUpperCase(), "teks"));
+						parent.appendChild(entry);
+						this.ent[key] = entry;
+					}
+				})
+				
+				for (const ip of [pr1, pr2, pr3, pr4]) {
+					pr.appendChild(ip);
+				}
+				
+				const kategori =  [...new Set(this.produk.map(p => p.kategori))];
+				const satuanJual = [...new Set(this.produk.map(p => p.satuan_jual))];
+				const satuanBeli = [...new Set(this.produk.map(p => p.satuan_beli))];
+				const supplier = [...new Set(this.produk.map(p => p.supplier))];
+				
+				this.combKategori = pembuatCombo(pr4, "Pilih kategori", kategori);
+				this.combSatuanJual = pembuatCombo(pr4, "Pilih satuan jual", satuanJual);
+				this.combSatuanBeli = pembuatCombo(pr4, "Pilih satuan beli", satuanBeli);
+				this.combSupplier = pembuatCombo(pr4, "Pilih supplier", supplier);
+				
+				const btns = [
+					["btn", "Simpan", () => this.simpanEdit()],
+					["btn btn-cancel", "Batal", () => {hideWindow();}]
+				]
+				pembuatButton(wadah, btns);
+			}
+		}	
+		
+		async simpanEdit() {
+			const result = Object.fromEntries(
+				Object.entries(this.ent).map(([key, val]) => [key, val.value.trim()])
+			);
+			
+			try {
+				const ktgr = this.combKategori.value;
+				const sj = this.combSatuanJual.value;
+				const sb = this.combSatuanBeli.value;
+				const sup = this.combSupplier.value;
+			
+				const kategori = ktgr !== "Pilih kategori" ? ktgr : (result.kategori ?? "");
+				const satuanBeli = sb !== "Pilih satuan beli" ? sb : (result.satuan_beli ?? "");
+				const satuanJual = sj !== "Pilih satuan jual" ? sj : (result.satuan_jual ?? "");
+				const supplier = sup !== "Pilih supplier" ? sup : (result.supplier ?? "");
+				
+				const jumlah = Number(result.jumlah) || 0;
+				const hargaBeli = parseFloat(result.harga_beli) || 0;
+				const isiSatuan = Number(result.isi_satuan) || 0;
+		
+				const data = this.itemEdit;
+		
+				const stokTertinggi =
+					(data.jumlah_tertinggi ?? 0) < jumlah
+						? jumlah
+						: (data.jumlah_tertinggi ?? 0);
+
+				const hargaModal = jumlah > 0 ? (hargaBeli / jumlah) : 0;
+		
+				const choosenProduk = this.produk.filter(
+					p => (p.id_produk || "") !== (data.id_produk || "")
+				);
+		
+				for (const p of choosenProduk) {
+					if ((p.nama || "").toLowerCase() === (result.nama || "").toLowerCase()) {
+						await modalShow(gagal, "Terdeteksi duplikasi nama produk");
+						return;
+					}
+				}
+		
+				if (await modalShow(confirm, "Simpan data sekarang?")) {
+					const dataEdit = {
+						nama_lama: data.nama ?? "",
+						barcode_lama: data.barcode ?? "",
+						id: data.id ?? 0,
+						barcode: result.barcode ?? data.barcode,
+						nama: result.nama ?? data.nama,
+						catatan: result.catatan ?? data.catatan,
+						kategori: kategori,
+						kadaluarsa: result.kadaluarsa ?? data.kadaluarsa,
+						satuan_beli: satuanBeli,
+						satuan_jual: satuanJual,
+						isi_satuan: isiSatuan,
+						harga_beli: hargaBeli,
+						harga_jual: parseFloat(result.harga_jual) || 0,
+						jumlah: jumlah,
+						stok_minimum: parseInt(result.stok_minimum) || 0,
+						supplier: supplier,
+						jumlah_tertinggi: stokTertinggi,
+						poin: parseInt(result.poin) || 0
+					};
+		
+					const datriw = {
+						aksi: "Edit produk",
+						nama_lama: data.nama || "",
+						nama: result.nama,
+						jumlah_lama: data.jumlah || 0,
+						jumlah: jumlah,
+						modal_lama: data.harga_modal || 0,
+						harga_modal: hargaModal,
+						jual_lama: data.harga_jual || 0,
+						harga_jual: parseFloat(result.harga_jual) || 0,
+						catatan_lama: data.catatan || "",
+						catatan: result.catatan || "",
+						barcode: data.barcode || "",
+						operator: user,
+						sumber: idDevice
+					};
+		
+					const upload = await postDataKedua("edit_produk", {
+						data: dataEdit,
+						riwayat: datriw
+					});
+		
+					if (upload) {
+						await modalShow(upload.stat, upload.pesan);
+					} else {
+						await modalShow(gagal, pesanGagal);
+					}
+				}
+			} catch (er) {
+				console.error(er);
+				await modalShow(gagal, String(er));
+			}
+		}
+		
+		async hapusProduk(id) {
+			const item = this.produk.find(p => String(p.id_produk) === String(id)) ?? null;
+			if (item) {
+				if (await modalShow(confirm, "Hapus produk " + item.nama + " sekarang?")) {
+					const data = {
+						aksi: "Hapus produk",
+						nama: item.nama,
+						id: item.id,
+						jumlah: item.jumlah,
+						barcode: item.barcode,
+						operator: user,
+						sumber: idDevice
+					}
+					const upload = await postData("hapus_produk", data);
+					if (upload) {
+						await modalShow(upload.stat, upload.pesan);
+					} else {
+						await modalShow(gagal, pesanGagal);
+					}
+					this.setup();
+				}
+			}
+		}
+		
+		async tambahStok(id) {
+			const item = this.produk.find(p => String(p.id_produk) === String(id)) ?? null;
+			if (item) {
+				const tambah = await modalShow("Tambahan", "Masukkan tambahan stok untuk " + item.nama, true);
+				if (tambah) {
+					const tambahan = parseInt(tambah);
+					const stok = item.jumlah + tambahan;
+					let tertinggi = item.jumlah_tertinggi;
+					if (stok > tertinggi) {
+						tertinggi = stok;
+					}
+					const datriw = {
+						aksi: "Tambah stok",
+						nama: item.nama,
+						jumlah: tambahan,
+						barcode: item.barcode,
+						stok_terbaru: stok,
+						operator: user,
+						sumber: idDevice
+					}
+					const data = {
+						tambahan: tambahan,
+						jumlah_tertinggi: tertinggi,
+						id_produk: item.id_produk
+					}
+					const upload = await postDataKedua("tambah_stok", {data_tambah: data, riwayat: datriw});
+					if (upload) {
+						await modalShow(upload.stat, upload.pesan);
+					} else {
+						await modalShow(gagal, pesanGagal);
+					}
+					this.setup();
+				}
+			}
+		}
+		
+		detailProduk(id) {
+			const item = this.produk.find(p => String(p.id_produk) === String(id)) ?? null;
+			if (item) {
+				const parent = pembuatJendela();
+				const pr = makeParent("container");
+				pr.style.display = "grid";
+				pr.style.gridTemplateColumns = "repeat(3, 1fr)";
+				
+				for (const [key, value] of Object.entries(item)) {
+					const labelKey = makeLabel(key.replace(/_/g, " "), "biasa");
+					const titik = makeLabel(":", "biasa");
+					let val = "";
+					if (["harga_jual", "harga_beli", "harga_modal"].includes(key.toLowerCase())) {
+						val = formatMataUang(value);
+					} else {
+						val = String(value);
+					}
+					const valLabel = makeLabel(val, "biasa");
+					for (const p of [labelKey, titik, valLabel]) {
+						pr.appendChild(p);
+					}
+				}
+				parent.appendChild(pr);
+				parent.appendChild(makeButton("btn btn-cancel", "Batal", () => {hideWindow();}));
+			}
+		}
+		
+		daftarProduk() {
+			this.kanan.innerHTML = "";
+			this.cariProduk = makeEntry("🔍 Cari produk...", "text");
+			this.cariProduk.oninput = () => this.findProduk(this.cariProduk.value.trim());
+			
+			this.div = makeParent("container");
+			for (const k of [this.cariProduk, this.div]) {
+				this.kanan.appendChild(k);
+			}
+			this.findProduk();
+		}
+		
+		setKiri() {
+			const div = pembuatField(this.kiri, "STATISTIK PRODUK");
+			const jual = this.produk.reduce((sum, b) => sum + b.harga_jual * b.jumlah, 0);
+			const modal = this.produk.reduce((sum, b) => sum + b.harga_modal * b.jumlah, 0);
+			const untung = jual - modal;
+			for (const x of [
+				makeLabel("Jumlah produk terdaftar: " + this.produk.length + " unit", "label-data"),
+				makeLabel("Total jumlah stok: " + this.produk.reduce((sum, b) => sum + b.jumlah, 0) + " pcs", "label-data"),
+				makeLabel("Total harga pokok penjualan: " + formatMataUang(Math.round(modal)), "label-data"),
+				makeLabel("Total estimasi penjualan: " + formatMataUang(Math.round(jual)), "label-data"),
+				makeLabel("Total estimasi keuntungan: " + formatMataUang(Math.round(untung)), "label-data")
+			]) {
+				div.appendChild(x);
+			}
+			const divMenu = pembuatField(this.kiri, "Menu utama produk");
+			const btns = [
+				["invisible-btn", "Tambah produk baru", () => this.tambahProdukBaru()],
+				["invisible-btn", "Daftar produk", () => this.daftarProduk()],
+				["invisible-btn", "Daftar produk diskon", () => this.daftarProdukDiskon()],
+				["invisible-btn", "Daftar produk tingkat", () => this.daftarProdukTingkat()],
+				["invisible-btn", "Laporan stok", () => this.laporanStok()],
+				["invisible-btn", "Kelola gambar produk", () => this.kelolaGambarProduk()]
+			]
+			pembuatButton(divMenu, btns);
+		}
+		async hapusSemuaGambar(paths) {
+			if (paths.length === 0) {
+				await modalShow(gagal, "Gambar produk tidak tersedia");
+				return;
+			}
+			if (await modalShow(confirm, "Anda yakin ingin menghapus seluruh gambar produk?")) {
+				let deleted = 0;
+				for (const path of paths) {
+					await postDataKedua("hapus_foto", {path: path});
+					deleted += 1;
+				}
+				await modalShow(berhasil, `Berhasil menghapus ${deleted} gambar dari total ${paths.length} gambar`);
+				this.kelolaGambarProduk();
+			}
+		}
+		async kelolaGambarProduk() {
+			this.kanan.innerHTML = "";
+			const files = await getDt("get_files/folder_katalog");
+			this.kanan.appendChild(makeButton("btn", "Hapus semua", () => this.hapusSemuaGambar(files)));
+			const fr = makeParent("prt");
+			this.kanan.appendChild(fr);
+			for (const path of files) {
+				const pathBagi = path.split(/[\\/]+/);
+				const nama = pathBagi.at(-1);
+				const gambar = await takePictures(nama, "folder_katalog", 0);
+				const field = pembuatField(fr, nama);
+				const pict = document.createElement("img");
+				pict.src = gambar;
+				pict.className = "image";
+				pict.loading = "lazy";
+				field.appendChild(pict);
+				field.appendChild(makeButton("btn", "Hapus", () => this.hapusGambarProduk(path, nama)));
+			}
+		}
+		async hapusGambarProduk(path, nama) {
+			if (await modalShow(confirm, "Hapus foto " + nama + " sekarang?")) {
+				const hapus = await postDataKedua("hapus_foto", {path: path});
+				await showInfo(hapus);
+				this.kelolaGambarProduk();
+			}
+		}
+		tingkat(data, judul, path) {
+			this.bawah.innerHTML = "";
+			const jdl = makeLabel(judul, "teks");
+			const tabel = makeTable(`
+				<tr>
+					<th>Id produk</th>
+					<th>Barcode</th>
+					<th>Nama produk</th>
+					<th>Minimum pembelian</th>
+					<th>Harga modal</th>
+					<th>Harga jual</th>
+					<th>Aksi</th>
+				</tr>
+			`)
+			for (const item of data) {
+				const tr = document.createElement("tr");
+				tr.innerHTML = `
+					<td>${item.id_produk}</td>
+					<td>${item.barcode}</td>
+					<td>${item.nama}</td>
+					<td>${item.min_beli} unit</td>
+					<td>${formatMataUang(item.harga_modal)}</td>
+					<td>${formatMataUang(item.harga_jual)}</td>
+					<td style="display: flex;">
+						<button class="btn btn-cancel" onclick="produk.hapusTingkat(${item.id_produk}, '${path}')">🗑️</button>
+					</td>
+				`
+				tabel.appendChild(tr);
+			}
+			for (const item of [jdl, tabel]) {
+				this.bawah.appendChild(item);
+			}
+		}
+		
+		async hapusTingkat(id, path) {
+			if (await modalShow(confirm, "Hapus produk dari daftar tingkat?")) {
+				const hapus = await postDataKedua("hapus_produk_tingkat", {id: id, path: path});
+				if (hapus) {
+					await modalShow(hapus.stat, hapus.pesan);
+				} else {
+					await modalShow(gagal, pesanGagal);
+				}
+				this.daftarProdukTingkat();
+			}
+		}
+		
+		daftarProdukTingkat() {
+			this.kanan.innerHTML = "";
+			const atas = makeParent("container-horizontal");
+			this.bawah = makeParent("container");
+			const a = makeButton("btn", "Tingkat A", () => this.tingkat(this.tingkat_a, "Data tingkat A", "tingkat_a"));
+			const b = makeButton("btn", "Tingkat B", () => this.tingkat(this.tingkat_b, "Data tingkat B", "tingkat_b"));
+			const tambah = makeButton("btn", "Tambah", () => this.tambahProdukTingkat());
+		
+			for (const btn of [a, b, tambah]) {
+				atas.appendChild(btn);
+			}
+			for (const item of [atas, this.bawah]) {
+				this.kanan.appendChild(item);
+			}
+		}
+		
+		tambahProdukTingkat() {
+			this.bawah.innerHTML = "";
+			this.path = pembuatCombo(this.bawah, "Pilih tingkat", ["Tingkat A", "Tingkat B"]);
+			const kategori = pembuatCombo(this.bawah, "Pilih kategori", [...new Set(this.produk.map(p => p.kategori))]);
+			kategori.onchange = () => this.filterProduk(kategori.value);
+			this.tengah = makeParent("container");
+			this.tengah.style.display = "grid";
+			this.tengah.style.gridTemplateColumns = "repeat(3,1fr)";
+			this.bawah.appendChild(this.tengah);
+			this.labelInfoTingkat = makeLabel("", "biasa");
+			this.bawah.appendChild(this.labelInfoTingkat);
+			this.entTingkat = pembuatEntry(this.bawah, [
+				["min", "Minimum pembelian", "number"],
+				["harga", "Harga jual", "number"]
+			])
+			this.entTingkat.min.oninput = () => this.kalkulasiTingkat(this.entTingkat.min.value.trim());
+			this.bawah.appendChild(makeButton("btn", "Simpan", () => this.simpanTingkat()));
+		}
+		
+		async simpanTingkat() {
+			const path = this.path.value;
+			if (path.toLowerCase() === "pilih tingkat") {
+				await modalShow(gagal, "Silahkan pilih tingkat terlebih dahulu");
+				return;
+			}
+			const hargaJual = this.entTingkat.harga.value.trim();
+			const minimum = this.entTingkat.min.value.trim();
+			if (![hargaJual, minimum].every(Boolean)) {
+				await modalShow(gagal, "Silahkan masukkan harga jual dan minimum pembelian terlebih dahulu");
+				return;
+			}
+			const id = this.tengah.querySelector("input:checked")?.value;
+			const produk = this.produk.find(p => (p.id_produk || "") === (id || "")) ?? null;
+			if (!produk) {
+				await modalShow(gagal, "Produk tidak ditemukan");
+				return;
+			}
+		
+			const pathQuery = path.replace(/ /g, "_").toLowerCase();
+			const hj = parseFloat(hargaJual);
+			const min = parseInt(minimum);
+			const data = {
+				id_produk: produk.id_produk,
+				barcode: produk.barcode,
+				nama: produk.nama,
+				harga_modal: produk.harga_modal * min,
+				harga_jual: hj,
+				min_beli: min,
+				path: pathQuery
+			}
+			if (await modalShow(confirm, "Data telah siap. Simpan sekarang?")) {
+				const upload = await postDataKedua("tambah_tingkat_produk", data);
+				if (upload) {
+					await modalShow(upload.stat, upload.pesan);
+				} else {
+					await modalShow(gagal, pesanGagal);
+				}
+			}
+		}
+		
+		showProdukKategori() {
+			this.tengah.innerHTML = "";
+			let form = "";
+			for (const item of this.produkPerKategori) {
+				form += `
+					<label class="nama">
+						<input type="radio" name="produk" value="${item.id_produk}">
+						${item.nama}
+					</label>
+				`
+			}
+			this.tengah.innerHTML = form;
+		}
+		
+		filterProduk(kategori) {
+			if (kategori.toLowerCase() === "pilih kategori") {
+				this.produkPerKategori = this.produk;
+			} else {
+				const filter = this.produk.filter(p => p.kategori.toLowerCase() === kategori.toLowerCase());
+				this.produkPerKategori = filter;
+			}
+			this.showProdukKategori();
+		}
+		
+		kalkulasiTingkat(p = 0) {
+			const min = parseInt(p);
+			const id = this.tengah.querySelector("input:checked")?.value;
+			const produk = this.produk.find(p => p.id_produk === id) ?? null;
+			if (produk) {
+				const hm = (produk.harga_modal || 0) * min
+				const hj = (produk.harga_jual || 0) * min
+			 	const kn = hj - hm
+				const rkm = 50/100 * kn
+				const rhjm = hm + rkm
+				this.labelInfoTingkat.textContent = `
+					Harga modal normal: ${formatMataUang(hm)}
+					Harga jual normal: ${formatMataUang(hj)}
+					Keuntungan normal: ${formatMataUang(kn)}
+					Rekomendasi keuntungan minimal: ${formatMataUang(rkm)}
+					Rekomendasi harga jual minimal: ${formatMataUang(rhjm)}
+		
+					Rekomendasi harga jual minimal diperoleh dari:
+					50% keuntungan normal dan harga jual normal
+				`
+			}
+		}
+		
+		kalkulasiDiskon(p=0) {
+			const data = this.ident.value.split(" ");
+			const id = data.at(0);
+			const item = this.produk.find(p => (p.id_produk || "") === (id || ""));
+			const hm = item.harga_modal;
+			const hj = item.harga_jual;
+			const hjb = hj * (1 - p / 100);
+			const ekn = hj - hm;
+			const ekb = hjb - hm;
+			const teks = `
+				Harga modal produk: ${formatMataUang(hm)}
+				Harga jual normal: ${formatMataUang(hj)}
+				Harga jual baru: ${formatMataUang(hjb)}
+				Estimasi keuntungan normal: ${formatMataUang(ekn)}
+				Estimasi keuntungan baru: ${formatMataUang(ekb)}
+				Keuntungan dikurangi: ${formatMataUang(ekn - ekb)}
+
+				Kalkulasi ini ditujukan untuk 1 unit produk dalam satuan jual terkecil
+				(pcs, unit, bungkus, kaleng, dan lain-lain).
+			`
+			this.labelInfoDiskon.textContent = teks;
+		}
+		
+		async tambahProdukDiskon() {
+			const idProduk = [...new Set(this.produk.map(p => `${p.id_produk} ${p.nama}`))];
+			const wadah = pembuatJendela();
+			this.labelInfoDiskon = makeLabel("", "biasa");
+			wadah.appendChild(this.labelInfoDiskon);
+			
+			this.ident = pembuatCombo(wadah, "Pilih produk", idProduk);
+			this.ent = pembuatEntry(wadah, [
+				["minimum", "Minimum pembelian", "number"],
+				["persen", "Persentase diskon", "number"]
+			])
+			this.ent.persen.oninput = () => this.kalkulasiDiskon(this.ent.persen.value.trim());
+			
+			const btn = makeButton("btn", "Simpan", () => this.simpanDiskon());
+			const btnbtl = makeButton("btn btn-cancel", "Batal", () => {hideWindow();});
+			wadah.appendChild(btn);
+			wadah.appendChild(btnbtl);
+		}
+		
+		async simpanDiskon() {
+			const produk = this.ident.value;
+			const identitas = produk.split(" ");
+			const item = this.produk.find(p => (p.id_produk || "") === (identitas.at(0) || ""));
+			const datriw = {
+				aksi: "Tambah produk diskon",
+				nama: item.nama || "",
+				barcode: item.barcode || "",
+				jumlah: 1,
+				operator: user,
+				sumber: idDevice
+			}
+			const data = {
+				nama: item.nama || "",
+				barcode: item.barcode || "",
+				harga_jual: item.harga_jual || 0,
+				persen: parseInt(this.ent.persen.value) || 0,
+				min: parseInt(this.ent.minimum.value) || 0
+			}
+			if (await modalShow(confirm, "Simpan data sekarang?", false)) {
+				const upload = await postDataKedua("tambah_produk_diskon", {data: data, riwayat: datriw});
+				if (upload) {
+					await modalShow(upload.stat, upload.pesan);
+				} else {
+					await modalShow(gagal, pesanGagal);
+				}
+				this.daftarProdukDiskon();
+			}
+		}
+		
+		async daftarProdukDiskon() {
+			this.kanan.innerHTML = "";
+			this.diskon = await getData("produk_diskon");
+			const atas = makeParent("container");
+			atas.style.flexDirection = "row";
+			this.cariDiskon = makeEntry("Nama produk atau id", "text");
+			const tambah = makeButton("btn", "Tambah", () => this.tambahProdukDiskon());
+			for (const item of [this.cariDiskon, tambah]) {
+				atas.appendChild(item);
+			}
+			const tabel = makeTable(`
+				<tr>
+					<th><button class="btn btn-cancel" onclick="produk.showAndHide()">🖥️</button>  Id produk</th>
+					<th>Nama</th>
+					<th>Persentase diskon</th>
+					<th>Minimum pembelian</th>
+					<th>Harga jual</th>
+					<th>Aksi</th>
+				</tr>
+			`)
+			for (const item of this.diskon) {
+				const tr = document.createElement("tr");
+				tr.innerHTML = `
+						<td>${item.id_produk || item.id}</td>
+						<td>${item.nama}</td>
+						<td>${item.persen} %</td>
+						<td>${item.min} unit</td>
+						<td>${formatMataUang(item.harga_jual)}</td>
+						<td style="display: flex;">
+							<button class="btn btn-cancel" onclick="produk.hapusProdukDiskon(${item.id})">🗑</button>
+						</td>
+				`
+				tabel.appendChild(tr);
+			}
+			for (const x of [atas, tabel]) {
+				this.kanan.appendChild(x);
+			}
+		}
+		
+		async hapusProdukDiskon(id) {
+			if (await modalShow(confirm, "Hapus produk sekarang?")) {
+				const hapus = await postDataKedua("hapus_produk_diskon", {id: id});
+				if (hapus) {
+					await modalShow(hapus.stat, hapus.pesan);
+				} else {
+					await modalShow(gagal, pesanGagal);
+				}
+				this.daftarProdukDiskon();
+			}
+		}
+		
+		showAndHide() {
+			if (this.kiri.style.display === "none") {
+				this.kiri.style.display = "flex";
+			} else {
+				this.kiri.style.display = "none";
+			}
+		}
+		
+		laporanStok() {
+			this.kanan.innerHTML = "";
+			const produkFiltered = this.produk.sort((a, b) => a.jumlah - b.jumlah);
+			const tabel = makeTable(`
+				<tr>
+					<th><button class="btn btn-cancel" onclick="produk.showAndHide()">🖥️ </button>Id produk</th>
+					<th>Nama</th>
+					<th>Jumlah stok</th>
+					<th>Stok minimum</th>
+					<th>Status</th>
+					<th>Aksi</th>
+				</tr>
+			`)
+			for (const item of this.produk) {
+				let warna = "green";
+				let status = "Cukup";
+				if (item.jumlah > 0 && item.jumlah < item.stok_minimum) {
+					warna = "yellow";
+					status = "Kurang";
+				} else if (item.jumlah <= 0) {
+					warna = "red";
+					status = "Habis";
+				}
+				const tr = document.createElement("tr");
+				tr.innerHTML = `
+					<td>${item.id_produk}</td>
+					<td>${item.nama}</td>
+					<td>${item.jumlah} ${item.satuan_jual}</td>
+					<td>${item.stok_minimum} ${item.satuan_jual}</td>
+					<td style="color: ${warna}; font-weight: 500">${status}</td>
+					<td style="display: flex;"><button class="btns" onclick="produk.tambahStok(${item.id_produk})">➕</button></td>
+				`
+				tabel.appendChild(tr);
+			}
+			this.kanan.appendChild(tabel);
+		}
+		
+		async setup() {
+			const main = document.querySelector(".tengah");
+			main.innerHTML = "";
+			this.produk = await getData("produk");
+			this.tingkat_a = await getData("tingkat_a");
+			this.tingkat_b = await getData("tingkat_b");
+			const wadah = makeParent("big-container");
+			
+			this.kiri = makeParent("profil-container");
+			this.kanan = makeParent("right-container");
+			for (const frame of [this.kiri, this.kanan]) {
+				wadah.appendChild(frame);
+			}
+			main.appendChild(wadah);
+			this.setKiri();
+			this.daftarProduk();
+		}
+	}
+	
+	class Transaksi {
+		constructor() {
+			this.produk = null;
+			this.pajak = null;
+			this.qr = null;
+			this.inputAktif = null;
+			this.bayar = 0;
+			this.kembali = 0;
+			this.noTrans = "";
+			this.sudahBayar = 0;
+			this.namaPembeli = "";
+			this.nomorTelepon = "";
+			document.addEventListener("click", (e) => {
+		    if (this.inputAktif && !e.target.closest("button, input, select, textarea")) {
+		      this.refocusInput();
+		    }
+			});
+		}
+		generateNoTrans() {
+			const tipe1 = String(inisialCode).slice(0,1).toUpperCase();
+			const tipe2 = Math.floor(Math.random() * 100) + 10;
+			const tipe3 = Math.floor(Math.random() * 900000) + 100000;
+			this.noTrans = String(tipe1) + String(tipe2) + "_" + String(tipe3);
+		}
+		refocusInput() {
+		  if (this.inputAktif) {
+		     this.inputAktif.focus();
+		  }
+		}
+		operasiQty(id, tipe) {
+			const item = keranjang.find(p => String(p.id) === String(id)) ?? null;
+			if (!item) {
+				return;
+			}
+			if (tipe === "-") {
+				if (item.qty > 0) {
+					item.qty -= 1;
+				}
+			} else {
+				const jumlah = this.produk.find(p => String(p.id_produk) === String(id))?.jumlah ?? 0;
+				if (item.qty < jumlah) {
+					item.qty += 1;
+				}
+			}
+			this.tambahkanSecondKeranjang();
+		}
+		async aktifkanPajak() {
+			await postDataKedua("pajak_selalu_aktif", {aktif: this.termasukPajak.checked});
+		}
+		async sertakanQr() {
+			await postDataKedua("cetak_qr_di_struk", {status: this.cetakQr.checked});
+		}
+		prepareAtas() {
+			this.termasukPajak = makeCekTrx(this.atas, "Termasuk pajak");
+			this.cetakQr = makeCekTrx(this.atas, "Cetak qr/barcode");
+			this.termasukPajak.checked = this.aktif;
+			this.termasukPajak.onchange = () => this.aktifkanPajak();
+			this.cetakQr.checked = this.qrAktif;
+			this.cetakQr.onchange = () => this.sertakanQr();
+			
+			pembuatButton(this.atas, [
+				["btns2", "↩️ Undo", () => this.doUndo()],
+				["btns2", "↪️ Redo", () => this.doRedo()],
+				["btns2", "🔄 Refresh", () => this.doRefresh()],
+				["btns2", "➡️ Kembali", () => {window.location.href = url + "dashboard_admin"}]
+			])
+		}
+		doRefresh() {
+			secondKeranjang.length = 0;
+			keranjang.length = 0;
+			totalBelanja = 0
+			this.labelTotal.textContent = formatMataUang(totalBelanja);
+			this.setup();
+		}
+		prepareAtasTengah() {
+			const kiri = makeParent("container");
+			kiri.style.width = "fit-content";
+			const kanan = document.createElement("div");
+			kanan.style.background = "var(--header-bg)";
+			kanan.style.flex = "1";
+			kanan.style.width = "100%"
+			kiri.appendChild(makeLabel("👤 " + user.toUpperCase(), "label-data"));
+			kiri.appendChild(makeLabel("🪪 " + inisialCode, "label-data"));
+			this.labelTotal = makeLabel(formatMataUang(totalBelanja), "total");
+			kanan.appendChild(this.labelTotal);
+			
+			for (const item of [kiri, kanan]) {
+				this.atasTengah.appendChild(item);
+			}
+		}
+		setEmptyRow() {
+			const tr = document.createElement("tr");
+			tr.innerHTML = `
+				<td>
+					<input style="width: 100%; padding: 10px; border: none; background: transparent;" id="input-barcode">
+				</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td></td>
+			`
+			this.tabel.appendChild(tr);
+			this.inputAktif = tr.querySelector("#input-barcode");
+			this.refocusInput();
+			
+			this.inputAktif.oninput = () => this.searchProduk(this.inputAktif.value.trim());
+			this.inputAktif.addEventListener("keydown", (e) => {
+				if (e.key === "Enter") {
+					const val = this.inputAktif.value.trim();
+					if (val === "") {
+						this.checkoutBayar();
+					} else {
+						this.tambahKeranjang(val, 1);
+					}
+				}
+			})
+		}
+		hitungKembalian(bayar) {
+			if (["0", ""].includes(bayar)) {
+				this.kembalian.textContent = "Kembali: " + formatMataUang(0);
+				this.kembalian.style.color = "red";
+				return
+			}
+			this.bayar = parseFloat(bayar);
+			const totalAsli = totalBelanja - this.sudahBayar;
+			this.kembali = this.bayar - totalAsli;
+			let warna = "green";
+			if (this.kembali < 0) {
+				warna = "red";
+			}
+			this.kembalian.textContent = "Kembali: " + formatMataUang(this.kembali);
+			this.kembalian.style.color = warna;
+		}
+		async resetTransaksi() {
+			secondKeranjang.length = 0;
+			keranjang.length = 0;
+			this.bayar = 0;
+			this.nomorTelepon = "";
+			this.namaPembeli = "";
+			this.sudahBayar = 0;
+			this.kembali = 0;
+			const dt = { no: this.noTrans, status: "Sudah dilunasi" };
+			await postDataKedua("ganti_status_cadangan", dt);
+			this.generateNoTrans();
+			hideWindow();
+			this.lihatKeranjang();
+		}
+		async transaksiSelesai() {
+			const jumlahBayar = this.sudahBayar + this.bayar;
+			if (secondKeranjang.length === 0) {
+				await modalShow(gagal, "Keranjang kosong");
+				return;
+			}
+			if (jumlahBayar < totalBelanja) {
+				await modalShow(gagal, "Pembayaran tidak cukup");
+				return;
+			}
+			const namaPembeli = this.infoBuyer.nama.value.trim();
+			const kontakPembeli = this.infoBuyer.kontak.value.trim();
+			const pembeli = `${namaPembeli} ${kontakPembeli}`;
+			const data = {
+				items: secondKeranjang,
+				total: parseFloat(totalBelanja),
+				bayar: parseFloat(jumlahBayar),
+				kembali: parseFloat(this.kembali),
+				sumber: String(idDevice),
+				operator: String(user),
+				no_trans: this.noTrans,
+				pembeli: pembeli
+			}
+			const upload = await postData("penjualan_campuran", data);
+			showInfo(upload);
+			this.resetTransaksi();
+		}
+		async checkoutBayar() {
+			if (keranjang.length === 0) {
+				await modalShow(gagal, "Keranjang kosong");
+				return;
+			}
+			document.querySelector(".lc").style.background = "transparent";
+			const wadah = pembuatJendela();
+			
+			const wadahUtama = document.createElement("fieldset");
+			wadahUtama.className = "field";
+			const legend = document.createElement("legend");
+			legend.textContent = "MENU PEMBAYARAN";
+			legend.className = "jdl";
+			wadahUtama.appendChild(legend);
+			wadah.appendChild(wadahUtama);
+			
+			const atas = makeParent("container");
+			atas.style.flexDirection = "row";
+			const bawah = makeParent("container-horizontal");
+			const totalQty = secondKeranjang.reduce((sum, a) => sum + a.qty_asli, 0);
+			
+			let teksTotal = "Total belanja: " + formatMataUang(totalBelanja);
+			if (this.sudahBayar > 0) {
+				const belumBayar = totalBelanja - this.sudahBayar;
+				teksTotal = "Total belum dibayar: " + formatMataUang(belumBayar);
+			}
+			atas.appendChild(makeLabel(teksTotal, "tot"));
+			this.kembalian = makeLabel("Kembali: " + formatMataUang(0), "change");
+			atas.appendChild(this.kembalian);
+			
+			const kiri = document.createElement("div");
+			kiri.style.display = "flex";
+			kiri.style.flexDirection = "column";
+			kiri.style.flex = "1";
+			kiri.style.width = "100%";
+			
+			const kanan = document.createElement("div");
+			kanan.style.display = "flex";
+			kanan.style.flexDirection = "column";
+		
+			const labelQty = makeLabel("Total qty: " + formatUnit(totalQty, "unit"), "jdl");
+			const btnSelesai = makeButton("btn", "Selesai", () => this.transaksiSelesai());
+			labelQty.style.height = "100%";
+			for (const x of [labelQty, btnSelesai]) {
+				kanan.appendChild(x);
+			}
+			
+			this.infoBuyer = pembuatEntry(kiri, [
+				["jumlah_bayar", "Jumlah pembayaran", "number"],
+				["nama", "Nama pembeli", "text"],
+				["kontak", "Nomor telepon/WhatsApp pembeli", "number"]
+			])
+			const inputUang = this.infoBuyer["jumlah_bayar"];
+			this.infoBuyer.nama.value = this.namaPembeli;
+			this.infoBuyer.kontak.value = this.nomorTelepon;
+			inputUang.oninput = () => this.hitungKembalian(inputUang.value.trim());
+			inputUang.addEventListener("keydown", (e) => {
+				if (e.key === "Enter") {
+					this.transaksiSelesai();
+				}
+			})
+			
+			for (const frame of [kiri, kanan]) {
+				bawah.appendChild(frame);
+			}
+			for (const frame of [atas, bawah]) {
+				wadahUtama.appendChild(frame);
+			}
+		}
+		prepareTengah() {
+			const frame = makeParent("container");
+			this.tabel = makeTable(`
+				<tr>
+					<th>Nama</th>
+					<th>Qty</th>
+					<th>Promo</th>
+					<th>Harga</th>
+					<th>Subtotal</th>
+				</tr>
+			`)
+			frame.appendChild(this.tabel);
+			this.setEmptyRow();
+			this.tengah.appendChild(frame);
+			this.refocusInput();
+		}
+		hapusKeranjang(id) {
+			keranjang = keranjang.filter(p => String(p.id) !== String(id));
+			this.tambahkanSecondKeranjang();
+		}
+		lihatKeranjang() {
+			const pop = document.querySelector(".produk-pop");
+			pop.classList.add("hidden");
+			const tbody = this.tabel.tBodies[0];
+			tbody.innerHTML = "";
+			for (const item of secondKeranjang) {
+				const tr = document.createElement("tr");
+				tr.innerHTML = `
+					<td>
+					<button class="btns2" onclick="transaksi.hapusKeranjang('${item.id}')">🗑️</button>
+					${item.nama}
+					</td>
+					<td>
+					<button class="btns2" onclick="transaksi.operasiQty('${item.id}', '-')">➖</button>
+					${item.qty}
+					<button class="btns2" onclick="transaksi.operasiQty('${item.id}', '+')">➕</button>
+					</td>
+					<td>${item.tipe_promo}</td>
+					<td>${formatMataUang(item.harga_jual)}</td>
+					<td>${formatMataUang(item.subtotal_jual)}</td>
+				`
+				this.tabel.appendChild(tr);
+			}
+			this.setEmptyRow();
+		}
+		async tambahkanSecondKeranjang() {
+			try {
+				const hasilValidasi = await fetch(url + "tambahkan_second_keranjang", {
+					method: "POST",
+					headers: {
+	          "Content-Type": "application/json",
+	        },
+	        body: JSON.stringify(keranjang)
+				});
+				const result = await hasilValidasi.json()
+				totalBelanja = result.total
+				this.labelTotal.textContent = "Total: " + formatMataUang(result.total);
+				secondKeranjang = result.data || [];
+				this.lihatKeranjang();
+			} catch (er) {
+				await modalShow(error, er);
+			}
+		}
+		searchProduk(teks="") {
+			const wadah = document.querySelector(".produk-pop");
+			wadah.classList.remove("hidden");
+			wadah.innerHTML = "";
+			if (teks === "") {
+				wadah.classList.add("hidden");
+				return;
+			}
+			const rect = this.inputAktif.getBoundingClientRect();
+			wadah.style.top = (rect.bottom + 5) + "px";
+			wadah.style.left = rect.left + "px";
+			wadah.style.minWidth = rect.width + "px";
+			const tabel = makeTable(`
+				<tr>
+					<th>Barcode</th>
+					<th>Nama produk</th>
+					<th>Jumlah stok</th>
+					<th>Harga jual</th>
+					<th>Aksi</th>
+				</tr>
+			`)
+			wadah.appendChild(tabel);
+			for (const item of this.produk) {
+				if (
+					item.nama.toLowerCase().includes(teks.toLowerCase()) ||
+					item.barcode.includes(teks) ||
+					item.id_produk.includes(teks) ||
+					item.kategori.toLowerCase().includes(teks.toLowerCase())
+				) {
+					const tr = document.createElement("tr");
+					tr.innerHTML = `
+						<td>${item.barcode}</td>
+						<td>${item.nama}</td>
+						<td>${item.jumlah} ${item.satuan_jual}</td>
+						<td>${formatMataUang(item.harga_jual)}</td>
+						<td style="display: flex; gap: 5px; background: transparent;">
+							<input class="entry" type="number">
+							<button class="btn" onclick="transaksi.tambahKeranjang('${item.id_produk}', this.previousElementSibling.value)">Tambah</button>
+						</td>
+					`
+					tabel.appendChild(tr);
+				}
+			}
+		}
+		async tambahKeranjang(id, qty) {
+			if ([NaN, "", "0"].includes(qty)) {
+				return;
+			}
+			qty = parseInt(qty);
+			const item = this.produk.find(p => String(p.id_produk) === String(id) || String(p.barcode) === String(id) || String(p.nama.toLowerCase()) === String(id.toLowerCase())) ?? null;
+			if (item) {
+				const foundKeranjang = keranjang.find(p => String(p.id) === String(item.id_produk)) ?? null;
+				if (foundKeranjang) {
+					const totalQty = foundKeranjang.qty + qty
+					if (totalQty > item.jumlah) {
+						await modalShow(gagal, "Stok produk tidak cukup");
+						return
+					}
+					foundKeranjang["qty"] = totalQty;
+				} else {
+					if (qty > item.jumlah) {
+						await modalShow(gagal, "Stok produk tidak cukup");
+						return
+					}
+					keranjang.push({
+						nama: item.nama,
+						barcode: item.barcode,
+						id: item.id_produk,
+						qty: qty,
+						harga: item.harga_jual
+					})
+				}
+			} else {
+				await modalShow(gagal, "Produk tidak ditemukan");
+				return;
+			}
+			this.tambahkanSecondKeranjang();
+		}
+		listProduk() {
+			const wadah = pembuatJendela();
+			const main = pembuatField(wadah, "Daftar produk");
+			const tabel = makeTable(`
+				<tr>
+					<th>Barcode</th>
+					<th>Nama produk</th>
+					<th>Kategori</th>
+					<th>Jumlah stok</th>
+					<th>Harga jual</th>
+					<th>Aksi</th>
+				</tr>
+			`)
+			main.appendChild(tabel);
+			for (const item of this.produk) {
+				const tr = document.createElement("tr");
+				tr.innerHTML = `
+					<td>${item.barcode}</td>
+					<td>${item.nama}</td>
+					<td>${item.kategori}</td>
+					<td>${item.jumlah} ${item.satuan_jual}</td>
+					<td>${formatMataUang(item.harga_jual)}</td>
+					<td style="display: flex; flex-direction: row; gap: 10px;">
+						<input class="entry" type="number">
+						<button class="btn" onclick="transaksi.tambahKeranjang('${item.id_produk}', this.previousElementSibling.value)">Tambah</button>
+					</td>
+				`;
+				tabel.appendChild(tr);
+			}
+		}
+		async simpanKeranjangSekarang(entr) {
+			const nama = entr.nama.value.trim();
+			const jumlahBayar = entr["jumlah bayar"].value.trim();
+			let bayar = 0;
+			if (![NaN, "0", ""].includes(jumlahBayar)) {
+				bayar = parseFloat(jumlahBayar);
+			}
+			const data = {
+				no: this.noTrans,
+				nama: nama,
+				dibayar: bayar,
+				status: "Belum lunas",
+				dt: keranjang
+			}
+			
+			if (await modalShow(confirm, "Data siap. Simpan sekarang?")) {
+				const upload = await postDataKedua("simpan_keranjang", data);
+				if (upload) {
+					await modalShow(upload.stat, upload.pesan);
+					this.doRefresh();
+				} else {
+					await modalShow(gagal, pesanGagal);
+				}
+			}
+		}
+		async simpanKeranjang() {
+			if (keranjang.length === 0) {
+				await modalShow(gagal, "Keranjang kosong");
+				return;
+			}
+			const wadah = pembuatJendela();
+			const main = pembuatField(wadah, "form cadangan keranjang");
+			const ent = pembuatEntry(main, [
+				["nama", "Nama pembeli", "text"],
+				["jumlah bayar", "Jumlah bayar", "number"]
+			])
+			main.appendChild(makeButton("btn", "Simpan", () => this.simpanKeranjangSekarang(ent)));
+		}
+		async muatUlangCadangan(data, no) {
+			const item = data.find(p => String(p.no) === String(no)) ?? null;
+			if (item["status"].toLowerCase() === "sudah dilunasi") {
+				await modalShow(gagal, "Transaksi nomor " + item.no + " telah dibayar lunas");
+				return;
+			}
+			hideWindow();
+			keranjang = JSON.parse(item.keranjang);
+			const infoPembeli = item.nama_pembeli.split(" ");
+			if (infoPembeli.length >= 2) {
+				const nope = infoPembeli.at(-1);
+				if (/^\d+$/.test(nope)) {
+					this.nomorTelepon = nope;
+					this.namaPembeli = infoPembeli.slice(0, -1).join(" ");
+				} else {
+					this.namaPembeli = item.nama_pembeli;
+				}
+			} else {
+				this.namaPembeli = item.nama_pembeli;
+			}
+			this.noTrans = item.no;
+			this.sudahBayar = item.jumlah_dibayar;
+			this.tambahkanSecondKeranjang();
+		}
+		async muatKeranjang() {
+			const dataKeranjang = await getData("cadangan_keranjang");
+			if (dataKeranjang) {
+				const wadah = pembuatJendela();
+				
+				const judul = makeLabel("Cadangan transaksi", "jdl");
+				const tabel = makeTable(`
+					<tr>
+						<th>Nomor transaksi</th>
+						<th>Nama pembeli</th>
+						<th>Jumlah dibayar</th>
+						<th>Status</th>
+					</tr>
+				`)
+				for (const item of dataKeranjang) {
+					const tr = document.createElement("tr");
+					tr.innerHTML = `
+						<td>${item.no}</td>
+						<td>${item.nama_pembeli}</td>
+						<td>${formatMataUang(item.jumlah_dibayar)}</td>
+						<td>${item["status"]}</td>
+					`
+					tr.onclick = () => this.muatUlangCadangan(dataKeranjang, item.no);
+					tabel.appendChild(tr);
+				}
+				wadah.appendChild(judul);
+				wadah.appendChild(tabel);
+			}
+		}
+		async simpanSementara() {
+			if (keranjang.length === 0) {
+				await modalShow(gagal, "Keranjang kosong");
+				return;
+			}
+			const nama = await modalShow("Masukkan pengenal", "Masukkan pengenal sementara pembeli", true);
+			if (nama) {
+				const data = {
+					nama: nama,
+					data: keranjang
+				}
+				const simpanan = localStorage.getItem("keranjang");
+				const dataSimpan = simpanan ? JSON.parse(simpanan) : [];
+				dataSimpan.push(data);
+				localStorage.setItem("keranjang", JSON.stringify(dataSimpan));
+				this.resetTransaksi();
+			}
+		}
+		muatSimpananSementara(combo, data) {
+			const nama = combo.value.trim();
+			keranjang = data.find(p => p.nama.toLowerCase() === nama.toLowerCase())?.data ?? [];
+			this.tambahkanSecondKeranjang();
+			hideWindow();
+		}
+		muatSimpanan() {
+			const data = localStorage.getItem("keranjang");
+			const dataSimpan = data ? JSON.parse(data) : [];
+			if (dataSimpan) {
+				const wadah = pembuatJendela();
+				const combo = pembuatCombo(wadah, "Pilih pengenal", dataSimpan.map(p => p.nama));
+				wadah.appendChild(makeButton("btn", "Muat", () => this.muatSimpananSementara(combo, dataSimpan)));
+			}
+		}
+		prepareBawah() {
+			pembuatButton(this.bawah, [
+				["btns2", "📦 Produk", () => this.listProduk()],
+				["btns2", "📥 Simpan keranjang", () => this.simpanKeranjang()],
+				["btns2", "📤 Muat keranjang", () => this.muatKeranjang()],
+				["btns2", "📥 Simpan sementara", () => this.simpanSementara()],
+				["btns2", "📤 Muat simpanan", () => this.muatSimpanan()]
+			])
+		}
+		async setup() {
+			this.produk = await getData("produk");
+			this.pajak = await getData("pajak");
+			this.qr = await getData("status_qr");
+			this.atas = document.querySelector(".atas");
+			this.tengah = document.querySelector(".tengah");
+			this.bawah = document.querySelector(".bawah");
+			this.atasTengah = document.getElementById("ateng");
+			this.atasTengah.classList.remove("hidden");
+			this.tengah.style.width = "100%";
+			for (const item of [this.atas, this.tengah, this.bawah, this.atasTengah]) {
+				item.innerHTML = "";
+			}
+			this.atas.style.justifyContent = "flex-end";
+			this.aktif = 0;
+			this.qrAktif = 0;
+			if (this.pajak) {
+				this.aktif = this.pajak[0].aktif;
+			}
+			if (this.qr) {
+				this.qrAktif = this.qr[0]["status"];
+			}
+			this.generateNoTrans();
+			this.prepareAtas();
+			this.prepareAtasTengah();
+			this.prepareTengah();
+			this.prepareBawah();
+		}
+	}
+	
+	class TransaksiCepat {
+		constructor() {
+			this.produk = null;
+			this.pajak = null;
+			this.keranjang = [];
+			this.secondKeranjang = [];
+			this.currentSearchId = 0;
+			this.totalBelanja = 0;
+			this.kembalian = 0;
+			this.persenPajak = 0;
+			this.aktifPajak = 0;
+			this.noTrans = "";
+		}
+		generateNoTrans() {
+			this.noTrans = createNo();
+		}
+		updateKeranjang() {
+			this.badge.textContent = this.secondKeranjang.length;
+		}
+		async tambahkanSecondKeranjang() {
+			try {
+				const hasilValidasi = await fetch(url + "tambahkan_second_keranjang", {
+					method: "POST",
+					headers: {
+	          "Content-Type": "application/json",
+	        },
+	        body: JSON.stringify(this.keranjang)
+				});
+				const result = await hasilValidasi.json()
+				this.totalBelanja = result.total
+				this.labelTotal.textContent = "Total: " + formatMataUang(result.total);
+				this.secondKeranjang = result.data || [];
+				this.updateKeranjang();
+			} catch (er) {
+				await modalShow(error, er);
+			}
+		}
+		async tambahKeranjang(id, qtyInput) {
+			const qtyValue = qtyInput.value.trim();
+			if ([NaN, "0", ""].includes(qtyValue)) {
+				return;
+			}
+			const qty = parseInt(qtyValue);
+			const find = this.keranjang.find(p => p.id === id) ?? null;
+			const prd = this.produk.find(p => p.id_produk === id) ?? null;
+			if (find) {
+				const totalQty = find.qty + qty;
+				if (totalQty > prd.jumlah) {
+					await modalShow(gagal, "Stok tidak cukup");
+					return;
+				}
+				find.qty = totalQty;
+			} else {
+				if (qty > prd.jumlah) {
+					await modalShow(gagal, "Stok tidak cukup");
+					return;
+				}
+				this.keranjang.push({
+					nama: prd.nama,
+					barcode: prd.barcode,
+					qty: qty,
+					harga: prd.harga_jual,
+					id: prd.id_produk
+				})
+			}
+			qtyInput.value = "";
+			this.tambahkanSecondKeranjang();
+		}
+		async cariProduk(produk="") {
+			this.frBawah.innerHTML = "";
+			const searchId = ++this.currentSearchId;
+			try {
+				for (const item of this.produk) {
+					if (searchId !== this.currentSearchId) return;
+					if (
+						item.nama.toLowerCase().includes(produk.toLowerCase()) ||
+						item.kategori.toLowerCase().includes(produk.toLowerCase()) ||
+						item.barcode.includes(produk) ||
+						item.id_produk.includes(produk)
+					) {
+						const fr = pembuatField(this.frBawah, item.nama);
+						fr.appendChild(makeLabel("🏷️ " + item.barcode), "biasa");
+						fr.appendChild(makeLabel("🆔 " + item.id_produk), "biasa");
+						fr.appendChild(makeLabel("Jumlah stok: " + formatUnit(item.jumlah, item.satuan_jual), "biasa"));
+						fr.appendChild(makeLabel("Harga jual: " + formatMataUang(addPajak(item.harga_jual, this.aktifPajak, this.persenPajak)), "biasa"));
+						const qty = makeEntry("Masukkan jumlah", "number");
+						fr.appendChild(qty);
+						fr.appendChild(makeButton("btn", "Tambah", () => this.tambahKeranjang(item.id_produk, qty)));
+					}
+				}
+			} catch (er) {}
+		}
+		async hapusProduk(id) {
+			this.keranjang = this.keranjang.filter(p => p.id !== id);
+			await this.tambahkanSecondKeranjang();
+			this.lihatKeranjang();
+		}
+		async selesaikanTransaksi(input) {
+			const result = Object.fromEntries(Object.entries(input).map(([key, val]) => [key, val.value.trim()]));
+			let bayar = 0;
+			if (result["jumlah bayar"] !== "") {
+				bayar = parseFloat(result["jumlah bayar"]);
+			}
+			if (bayar < this.totalBelanja) {
+				await modalShow(gagal, "Pembayaran tidak cukup");
+				return;
+			}
+			const namaPembeli = result.nama;
+			const kontak = result["nomor telepon"];
+			const pembeli = namaPembeli + " " + kontak;
+			const data = {
+				items: this.secondKeranjang,
+				total: parseFloat(this.totalBelanja),
+				bayar: parseFloat(bayar),
+				kembali: parseFloat(this.kembalian),
+				sumber: String(idDevice),
+				operator: String(user),
+				no_trans: this.noTrans,
+				pembeli: pembeli
+			}
+			if (await modalShow(confirm, "Data telah siap. Selesaikan transaksi sekarang?")) {
+				const up = await postData("penjualan_campuran", data);
+				if (up) {
+					await modalShow(up.stat, up.pesan);
+					this.resetTrx();
+				} else {
+					await modalShow(gagal, pesanGagal);
+				}
+			}
+		}
+		resetTrx() {
+			this.secondKeranjang.length = 0;
+			this.keranjang.length = 0;
+			this.totalBelanja = 0;
+			this.labelTotal.textContent = "Total: " + formatMataUang(this.totalBelanja);
+			this.setup();
+		}
+		lihatKeranjang() {
+			this.frBawah.innerHTML = "";
+			const fr = makeParent("profil-container");
+			this.frBawah.appendChild(fr);
+			for (const item of this.secondKeranjang) {
+				const frame = pembuatField(fr, item.nama);
+				const bd = document.createElement("label");
+				bd.className = "badge";
+				bd.textContent = "x";
+				bd.onclick = () => this.hapusProduk(item.id);
+				frame.appendChild(bd);
+				frame.appendChild(makeLabel("Qty: " + formatUnit(item.qty, "unit"), "biasa"));
+				frame.appendChild(makeLabel("Harga jual: " + formatMataUang(item.harga_jual), "biasa"));
+				frame.appendChild(makeLabel("Subtotal: " + formatMataUang(item.subtotal_jual), "biasa"));
+			}
+			const co = pembuatField(this.frBawah, "Checkout");
+			const ent = pembuatEntry(co, [
+				["jumlah bayar", "Jumlah bayar", "number"],
+				["nama", "Nama pembeli", "text"],
+				["nomor telepon", "Nomor telepon", "number"]
+			])
+			ent["jumlah bayar"].oninput = () => this.hitungKembalian(ent["jumlah bayar"].value.trim())
+			co.appendChild(makeButton("btn", "Selesai", () => this.selesaikanTransaksi(ent)));
+		}
+		hitungKembalian(bayar) {
+			let jumlahBayar = 0;
+			if (bayar !== "") {
+				jumlahBayar = parseFloat(bayar);
+			}
+			this.kembalian = jumlahBayar - this.totalBelanja;
+			this.labelTotal.textContent = "Kembali: " + formatMataUang(this.kembalian);
+		}
+		prepareFrames() {
+			this.labelTotal = document.getElementById("jdl");
+			this.labelTotal.textContent = "Total: " + formatMataUang(this.totalBelanja);
+			
+			const atas = makeParent("container-horizontal");
+			this.cari = makeEntry("Cari produk", "text");
+			this.cari.oninput = () => this.cariProduk(this.cari.value.trim());
+			const btnKeranjang = makeButton("btn btn-cancel", "🛒", () => this.lihatKeranjang());
+			this.badge = document.createElement("label");
+			this.badge.className = "badge";
+			this.badge.textContent = this.keranjang.length;
+			btnKeranjang.appendChild(this.badge);
+			for (const item of [this.cari, btnKeranjang]) {
+				atas.appendChild(item);
+			}
+			this.tengah.appendChild(atas);
+			this.frBawah = makeParent("frame");
+			this.tengah.appendChild(this.frBawah);
+		}
+		async setup() {
+			resetPop();
+			this.produk = await getData("produk");
+			this.pajak = await getData("pajak");
+			this.tengah = document.querySelector(".tengah");
+			this.tengah.innerHTML = "";
+			if (this.pajak) {
+				this.persenPajak = this.pajak[0].persen;
+				this.aktifPajak = this.pajak[0].aktif;
+			}
+			this.generateNoTrans();
+			this.prepareFrames();
+		}
+	}
+	
+	class OpsiTransaksi {
+		async ringkasanTransaksi(periode) {
+			resetJudul("Ringkasan transaksi");
+			this.prt.innerHTML = "";
+			const parent = makeParent("frame");
+			this.prt.appendChild(parent);
+			
+			const data = await getDt(`get_data_sold_out_today/${periode}`);
+			if (data) {
+				const pr1 = pembuatField(parent, `Informasi penjualan ${periode.replace(/_/g, " ")}`);
+				pr1.style.display = "grid";
+				pr1.style.gridTemplateColumns = "repeat(3,1fr)";
+				for (const [key, value] of Object.entries(data)) {
+					if (key.toLowerCase() !== "data") {
+						const lbla = makeLabel(key.toUpperCase(), "biasa");
+						const titik = makeLabel(":", "biasa");
+						let val = formatMataUang(value);
+						if (key.toLowerCase() === "terjual") {
+							val = formatUnit(value, "unit");
+						}
+						const lblb = makeLabel(val, "biasa");
+						for (const item of [lbla, titik, lblb]) {
+							pr1.appendChild(item);
+						}
+					}
+				}
+				grafikMaker(
+					parent,
+					`PENJUALAN ${periode.replace(/_/g, " ").toUpperCase()}`,
+					"Pemasukan dan keuntungan",
+					["Pemasukan", "Keuntungan"],
+					"Laporan penjualan",
+					[data.total, data.laba]
+				)
+				const tabel = makeTable(`
+					<tr>
+						<th>Id produk</th>
+						<th>Nama produk</th>
+						<th>Terjual</th>
+						<th>Pemasukan</th>
+						<th>Keuntungan</th>
+					</tr>
+				`)
+				for (const item of data.data) {
+					const tr = document.createElement("tr");
+					tr.innerHTML = `
+						<td>${item.id_produk}</td>
+						<td>${item.nama}</td>
+						<td>${item.terjual}</td>
+						<td>${formatMataUang(item.total)}</td>
+						<td>${formatMataUang(item.laba)}</td>
+					`
+					tabel.appendChild(tr);
+				}
+				this.prt.appendChild(tabel)
+			}
+		}
+		setButtonBawah() {
+			pembuatButton(this.bawah, [
+				["btn", "Ringkasan transaksi", () => this.setup()],
+				["btn", "Transaksi mobile", async () => {await trx.setup()}],
+				["btn", "Transaksi desktop", async () => {await transaksi.setup()}]
+			])
+		}
+		setTengah() {
+			this.tengah.innerHTML = "";
+			const btnFr = makeParent("container-horizontal");
+			pembuatButton(btnFr, [
+				["btns", "Hari ini", () => this.ringkasanTransaksi("hari_ini")],
+				["btns", "Minggu ini", () => this.ringkasanTransaksi("minggu_ini")],
+				["btns", "Bulan ini", () => this.ringkasanTransaksi("bulan_ini")]
+			])
+			
+			this.prt = makeParent("container");
+			for (const fr of [btnFr, this.prt]) {
+				this.tengah.appendChild(fr);
+			}
+		}
+		setup() {
+			resetPop();
+			this.tengah = document.querySelector("#tgh");
+			this.bawah = document.querySelector("#bwh");
+			for (const item of [this.tengah, this.bawah]) {
+				item.innerHTML = "";
+			}
+			this.setButtonBawah();
+			this.setTengah();
+			this.ringkasanTransaksi("hari_ini");
+		}
+	}
+	class Riwayat {
+		constructor() {
+			this.dataFilter = null;
+			this.pengguna = null;
+		}
+		async getDataFilter(periode, operator) {
+			const aspek = {
+				periode: periode,
+				operator: operator
+			}
+			const data = await getDt("get_riwayat_filter/" + JSON.stringify(aspek));
+			this.dataFilter = data;
+		}
+		prepareBawah() {
+			pembuatButton(this.bawah, [
+				["btn", "Riwayat penjualan", () => this.riwayatPenjualan()],
+				["btn", "Riwayat aktivitas", () => this.riwayatAktivitas()]
+			])
+		}
+		async riwayatAktivitas() {
+			const riwayat = await getData("riwayat");
+			this.tengah.innerHTML = "";
+			const parent = pembuatField(this.tengah, "Riwayat aktivitas operator");
+		}
+		lihatDetailRiwayat(data) {
+			if (data) {
+				const wadah = pembuatJendela();
+				
+				for (const f of data) {
+					const wdh = pembuatField(wadah, f.nama);
+					wdh.style.display = "grid";
+					wdh.style.gridTemplateColumns = "repeat(3,1fr)";
+				
+					for (const [key, value] of Object.entries(f)) {
+						if (key.toLowerCase() !== "nama") {
+							let val = String(value);
+							if (["harga_asli", "harga_jual", "harga_modal", "laba", "potongan_diskon", "potongan_tingkat", "subtotal_jual", "subtotal_modal"].includes(key.toLowerCase())) {
+								val = formatMataUang(Math.round(value));
+							} else if (["qty", "qty_asli"].includes(key.toLowerCase())) {
+								val = formatUnit(value, "unit");
+							}
+							const lkey = makeLabel(key.replace(/_/g, " "), "biasa");
+							const titik = makeLabel(":", "biasa");
+							const lval = makeLabel(val, "biasa");
+							for (const p of [lkey, titik, lval]) {
+								wdh.appendChild(p);
+							}
+							wadah.appendChild(wdh);
+						}
+					}
+				}
+			}
+		}
+		async lihatDataRiwayat() {
+			const periode = this.periode.value;
+			const operator = this.operator.value;
+			await this.getDataFilter(periode, operator);
+			this.bwh.innerHTML = "";
+			this.dataFilter.forEach((items, i) => {
+				const parent = pembuatField(this.bwh, items.waktu);
+				parent.style.display = "grid";
+				parent.style.gridTemplateColumns = "repeat(3,1fr)";
+				for (const [key, value] of Object.entries(items)) {
+					if (!["id", "data_belanja", "waktu"].includes(key.toLowerCase())) {
+						let statusPajak = "Tidak termasuk pajak";
+						if (key.toLowerCase() === "status_pajak") {
+							if (value === 1) {
+								statusPajak = "Termasuk pajak";
+							}
+						}
+						let val = String(value);
+						if (["bayar", "kembali", "kena_pajak", "total", "total_laba"].includes(key.toLowerCase())) {
+							val = formatMataUang(Math.round(value));
+						} else if (key.toLowerCase() === "status_pajak") {
+							val = statusPajak;
+						}
+						const labelKey = makeLabel(key.replace(/_/g, " "), "biasa");
+						const titik = makeLabel(":", "biasa");
+						const labelValue = makeLabel(val, "biasa");
+						for (const item of [labelKey, titik, labelValue]) {
+							parent.appendChild(item);
+						}
+					}
+				}
+				pembuatButton(parent, [
+					["btns2", "🔍 Detail", () => this.lihatDetailRiwayat(JSON.parse(items.data_belanja))],
+					["btns2", "🗑 Hapus", () => this.hapusRiwayat(JSON.parse(items.data_belanja))]
+				])
+			});
+		}
+		riwayatPenjualan() {
+			this.tengah.innerHTML = "";
+			resetJudul("Riwayat penjualan");
+			this.atas = makeParent("container-horizontal");
+			this.bwh = makeParent("frame");
+			for (const item of [this.atas, this.bwh]) {
+				this.tengah.appendChild(item)
+			}
+			this.periode = pembuatCombo(this.atas, "Semua periode", ["Hari ini", "Minggu ini", "Bulan ini"]);
+			this.operator = pembuatCombo(this.atas, "Semua operator", [...new Set(this.pengguna.map(p => p.nama))]);
+			pembuatButton(this.atas, [
+				["btn", "Lihat data", () => this.lihatDataRiwayat()],
+				["btn", "Hapus semua", () => this.hapusRiwayat()]
+			])
+		}
+		async setup() {
+			resetPop();
+			resetJudul("Riwayat")
+			this.pengguna = await getData("user");
+			this.tengah = document.querySelector(".tengah");
+			this.bawah = document.querySelector(".bawah");
+			for (const item of [this.tengah, this.bawah]) {
+				item.innerHTML = "";
+			}
+			this.prepareBawah();
+			this.riwayatPenjualan();
+			this.lihatDataRiwayat();
+		}
+	}
+
+  const pemilik = new Pemilik();
+  const pengguna = new Pengguna();
+  const userMenu = new UserMenu();
+  const transaksi = new Transaksi();
+  const produk = new Produk();
+  const pajak = new Pajak();
+  const cs = new SupplierCustomer();
+  const biaya = new Pengeluaran();
+  const trx = new TransaksiCepat();
+  const riwayat = new Riwayat();
+  const opsiTransaksi = new OpsiTransaksi();
+  window.onload = function() {
+    validasiLogin();
+  };
+  
+</script>
+</html>
