@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+
     steps:
       - uses: actions/checkout@v4
 
@@ -28,20 +29,19 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.buildozer
-          key: buildozer-global-${{ hashFiles('buildozer.spec') }}
+          key: buildozer-global-py311-${{ hashFiles('buildozer.spec') }}
 
       - name: Cache buildozer project build
         uses: actions/cache@v4
         with:
           path: .buildozer
-          key: buildozer-project-${{ hashFiles('buildozer.spec') }}
+          key: buildozer-project-py311-${{ hashFiles('buildozer.spec') }}
 
       - name: Install buildozer and Cython
         run: |
-          pip3 install "pip<24.1"
-          pip3 install cython==0.29.36
-          pip3 install buildozer
-          pip3 install --upgrade "https://github.com/kivy/python-for-android/archive/master.zip"
+          python -m pip install "pip<24.1"
+          python -m pip install cython==0.29.36
+          python -m pip install buildozer
 
       - name: Build APK with Buildozer
         run: |
