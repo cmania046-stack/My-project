@@ -42,7 +42,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy,flask,werkzeug,markupsafe,jinja2,click,itsdangerous,blinker
+requirements = python3,kivy,flask,werkzeug
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
